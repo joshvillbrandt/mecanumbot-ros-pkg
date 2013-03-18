@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+
+<launch>
+	<!-- Wiimote channel mapping
+
+	#	Axis description
+	0	accel X
+	1	accel Y
+	2	accel Z
+	3	gyro X (roll)
+	4	gyro Y (pitch)
+	5	gyro Z (yaw)
+
+	#	Button description
+	0	1
+	1	2
+	2	A
+	3	B (toggle button on back of device)
+	4	Plus
+	5	Minus
+	6	Rocker Left
+	7	Rocker Right
+	8	Rocker Up
+	9	Rocker Down
+	10	HOME
+	-->
+
+	<!-- start wiimote controller -->
+	<node respawn="true" pkg="wiimote"  type="wiimote_node.py" name="wiimote_node" output="screen"/>
+	<node pkg="mecanumbot" type="teleop_joy" name="teleop_joy">
+		<param name="~linear_x_scale" value="0.2" type="double"/>
+		<param name="~linear_y_scale" value="1.6" type="double"/>
+		<param name="~angular_z_scale" value="0.4" type="double"/>
+		<param name="~preboost_scale" value="0.3" type="double"/>
+		<param name="~linear_x_axis" value="1" type="int"/>
+		<param name="~angular_z_axis" value="0" type="int"/>
+		<param name="~linear_y_left_button" value="5" type="int"/>
+		<param name="~linear_y_right_button" value="4" type="int"/>
+		<param name="~boost_button" value="3" type="int"/>
+		<param name="~enable_button" value="2" type="int"/>
+		<param name="~wii_lights" value="true" type="bool"/>
+	</node>
+</launch>

@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+
+<launch>
+	<!-- start rviz with custom vcg -->
+	<node pkg="rviz" type="rviz" name="rviz" args="-d $(find mecanumbot)/default.vcg">
+	</node>
+</launch>
