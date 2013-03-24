@@ -12,10 +12,10 @@
 	<node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
 	
 	<!-- start odom converter -->
-	<!--<node pkg="mecanumbot" type="odometry_publisher" name="odometry_publisher" output="screen">
+	<node pkg="mecanumbot" type="odometry_publisher" name="odometry_publisher" output="screen">
 		<param name="~scale_x" value="0.000885" />
 		<param name="~scale_th" value="0.0032" />
-	</node>-->
+	</node>
 	
 	<!-- laser scan matching odom -->
 	<!--<node pkg="laser_scan_matcher" type="laser_scan_matcher_node" name="laser_scan_matcher_node" output="screen">
@@ -32,12 +32,12 @@
 	</node>-->
 	
 	<!-- start kinect -->
-	<!--<include file="$(find openni_launch)/launch/openni.launch" />
+	<include file="$(find openni_launch)/launch/openni.launch" />
 	<node pkg="nodelet" type="nodelet" name="pointcloud_throttle" args="load pointcloud_to_laserscan/CloudThrottle openni_manager" respawn="true">
 		<param name="max_rate" value="0.5"/>
 		<remap from="cloud_in" to="/camera/depth/points"/>
 		<remap from="cloud_out" to="cloud_throttled"/>
-	</node>-->
+	</node>
 	
 	<!-- start laser -->
 	<!--<node pkg="neato_xv11_lds" type="neato_xv11_lds_publisher" name="neato_xv11_lds_publisher">

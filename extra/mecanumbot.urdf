@@ -20,7 +20,7 @@
 		</visual>
 	</link>
 
-	<link name="openni_camera">
+	<link name="camera_link">
 		<visual>
 			<geometry>
 				<box size="0.06 .28 .03"/>
@@ -47,9 +47,9 @@
 		<origin rpy="0 0 -0.05" xyz="0.097 0.0 0.125"/>
 	</joint>
 
-	<joint name="base_link_to_openni_camera" type="fixed">
+	<joint name="base_link_to_camera_link" type="fixed">
 		<parent link="base_link"/>
-		<child link="openni_camera"/>
+		<child link="camera_link"/>
 		<origin rpy="0 -0.05 0" xyz="-0.112 0.0 0.230"/>
 	</joint>
 
