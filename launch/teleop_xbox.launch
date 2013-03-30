@@ -33,7 +33,7 @@
 	<node respawn="true" pkg="joy"  type="joy_node" name="xbox_node" output="screen">
 		<param name="dev" value="/dev/input/js0" type="string"/>
 	</node>
-	<node pkg="mecanumbot" type="teleop_joy" name="teleop_xbox">
+	<node pkg="mecanumbot" type="teleop_xbox" name="teleop_xbox">
 		<param name="~linear_x_scale" value="1.0" type="double"/>
 		<param name="~linear_y_scale" value="1.0" type="double"/>
 		<param name="~angular_z_scale" value="-2.0" type="double"/>

@@ -67,12 +67,16 @@ include_directories(include
 
 ## Declare a cpp executable
 add_executable(odometry_publisher src/odometry_publisher.cpp)
+add_executable(teleop_xbox src/teleop_xbox.cpp)
 
 ## Add dependencies to the executable
 # add_dependencies(mecanumbot_node ${PROJECT_NAME})
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(odometry_publisher
+  ${catkin_LIBRARIES}
+)
+target_link_libraries(teleop_xbox
   ${catkin_LIBRARIES}
 )
 
