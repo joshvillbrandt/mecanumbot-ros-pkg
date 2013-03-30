@@ -2,6 +2,6 @@
 
 <launch>
 	<!-- start rviz with custom vcg -->
-	<node pkg="rviz" type="rviz" name="rviz" args="-d $(find mecanumbot)/extra/mecanumbot.vcg">
+	<node pkg="rviz" type="rviz" name="rviz" args="-d $(find mecanumbot)/extra/mecanumbot.rviz">
 	</node>
 </launch>

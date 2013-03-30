@@ -36,7 +36,7 @@
 			</geometry>
 			<origin xyz="0 0 -0.0015"/>
 			<material name="polycarb">
-				<color rgba="1 1 1 0.1"/>
+				<color rgba="1 1 1 0.4"/>
 			</material>
 		</visual>
 	</link>

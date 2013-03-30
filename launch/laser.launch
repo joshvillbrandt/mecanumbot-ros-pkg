@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<launch>
+	<!-- start laser -->
+	<node pkg="xv_11_laser_driver" type="neato_laser_publisher" name="neato_laser_publisher">
+		<param name="~port" value="/dev/laser" />
+		<param name="~frame_id" value="/base_laser" />
+		<param name="~firmware_version" value="2" />
+	</node>
+	<!--<node pkg="neato_xv11_lds" type="neato_xv11_lds_publisher" name="neato_xv11_lds_publisher">
+		<param name="~port" value="/dev/laser" />
+	</node>-->
+</launch>
