@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+
+<launch>
+	<!-- start the console and logger_level tools -->
+	<node pkg="rqt_console" type="rqt_console" name="rqt_console" />
+	<node pkg="rqt_logger_level" type="rqt_logger_level" name="rqt_logger_level" />
+</launch>

@@ -1,2 +1,3 @@
-SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ATTRS{serial}=="A8008Gj5", SYMLINK+="arduino"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ATTRS{serial}=="AD01W5EB", SYMLINK+="arduino"
 SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ATTRS{serial}=="A601637M", SYMLINK+="laser"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="046d", ATTRS{idProduct}=="c309", ATTRS{serial}=="0000:00:1d.0", SYMLINK+="xboxcontroller"

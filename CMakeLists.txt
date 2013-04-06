@@ -4,10 +4,12 @@ project(mecanumbot)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS std_msgs nav_msgs geometry_msgs roscpp tf)
+find_package(catkin REQUIRED COMPONENTS std_msgs nav_msgs geometry_msgs sensor_msgs pcl pcl_ros roscpp tf)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
+find_package(Eigen REQUIRED)
+include_directories(${Eigen_INCLUDE_DIRS})
 
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and scripts declared therein get installed
