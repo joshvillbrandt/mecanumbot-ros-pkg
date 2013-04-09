@@ -9,6 +9,7 @@
 #include <ros/console.h>
 #include <geometry_msgs/Twist.h>
 #include <sensor_msgs/Joy.h>
+#include <mecanumbot/LightControl.h>
 
 class MecanumbotTeleop
 {
@@ -21,6 +22,7 @@ class MecanumbotTeleop
 
 		ros::NodeHandle nh;
 		ros::Publisher vel_pub;
+		ros::Publisher light_pub;
 		ros::Subscriber joy_sub;
 		
 		bool enabled, flipped;
@@ -29,6 +31,7 @@ class MecanumbotTeleop
 		double linear_x_scale, linear_y_scale, angular_z_scale, preboost_scale, force_pub_rate;
 
 		geometry_msgs::Twist msg;
+		mecanumbot::LightControl light_msg;
 		ros::Time last_pub_time;
 		ros::Duration force_pub_period;
 };
@@ -70,6 +73,7 @@ MecanumbotTeleop::MecanumbotTeleop():
 
 	// connects subs and pubs
 	vel_pub = nh.advertise<geometry_msgs::Twist>("cmd_vel", 1);
+	light_pub = nh.advertise<mecanumbot::LightControl>("light_control", 1);
 	joy_sub = nh.subscribe<sensor_msgs::Joy>("joy", 1, &MecanumbotTeleop::joyCallback, this);
 
 	// intial message that might be pushed out by the force_pub_rate
@@ -100,10 +104,6 @@ void MecanumbotTeleop::spin()
 
 void MecanumbotTeleop::joyCallback(const sensor_msgs::Joy::ConstPtr& joy)
 {
-	// TODO: cycle nav light on/off with button 1
-	
-	// TODO: cycle hazard lights on/off with button 2
-	
 	// enable / disable cmd_vel commands
 	if(enable_button >= 0) {
 		if(joy->buttons[enable_button] == 0) flipped = false;
@@ -132,6 +132,16 @@ void MecanumbotTeleop::joyCallback(const sensor_msgs::Joy::ConstPtr& joy)
 	}
 	vel_pub.publish(msg);
 	last_pub_time = ros::Time::now();
+	
+	// lights
+	light_msg.forward_brightness = 255 - ((joy->axes[5] + 1) * 255 / 2);
+	if(joy->buttons[2] == 1) light_msg.internal_brightness = 127;
+	else light_msg.internal_brightness = 0;
+	if(joy->buttons[1] == 1) light_msg.mood_color = 3;
+	else if(joy->buttons[3] == 1) light_msg.mood_color = 2;
+	else if(joy->buttons[0] == 1) light_msg.mood_color = 1;
+	else light_msg.mood_color = 0;
+	light_pub.publish(light_msg);
 }
 
 

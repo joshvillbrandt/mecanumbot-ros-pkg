@@ -31,7 +31,7 @@
 
 	<!-- start xbox controller -->
 	<node respawn="true" pkg="joy"  type="joy_node" name="xbox_node" output="screen">
-		<param name="dev" value="/dev/input/js0" type="string"/>
+		<param name="dev" value="/dev/input/js1" type="string"/>
 	</node>
 	<node pkg="mecanumbot" type="teleop_xbox" name="teleop_xbox">
 		<param name="~linear_x_scale" value="1.0" type="double"/>
