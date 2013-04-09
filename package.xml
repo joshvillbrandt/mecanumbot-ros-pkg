@@ -27,4 +27,7 @@
   <run_depend>nav_msgs</run_depend>
   <run_depend>pcl</run_depend>
   <run_depend>pcl_ros</run_depend>
+
+  <build_depend>message_generation</build_depend>
+  <run_depend>message_runtime</run_depend>
 </package>

@@ -4,7 +4,7 @@ project(mecanumbot)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS std_msgs nav_msgs geometry_msgs sensor_msgs pcl pcl_ros roscpp tf)
+find_package(catkin REQUIRED COMPONENTS std_msgs nav_msgs geometry_msgs sensor_msgs pcl pcl_ros roscpp tf message_generation)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -19,12 +19,12 @@ include_directories(${Eigen_INCLUDE_DIRS})
 ## Declare ROS messages and services ##
 #######################################
 
-## Generate messages in the 'msg' folder
-# add_message_files(
-#   FILES
-#   Message1.msg
-#   Message2.msg
-# )
+# Generate messages in the 'msg' folder
+add_message_files(
+  FILES
+  RobotHealth.msg
+  LightControl.msg
+)
 
 ## Generate services in the 'srv' folder
 # add_service_files(
@@ -34,10 +34,10 @@ include_directories(${Eigen_INCLUDE_DIRS})
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   geometry_msgs
-# )
+generate_messages(
+  DEPENDENCIES
+  std_msgs
+)
 
 ###################################################
 ## Declare things to be passed to other projects ##
@@ -47,9 +47,9 @@ include_directories(${Eigen_INCLUDE_DIRS})
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-   INCLUDE_DIRS include
+  INCLUDE_DIRS include
 #  LIBRARIES mecanumbot
-#  CATKIN_DEPENDS geometry_msgs roscpp tf
+  CATKIN_DEPENDS message_runtime #geometry_msgs roscpp tf
 #  DEPENDS system_lib
 )
 
@@ -84,7 +84,7 @@ target_link_libraries(teleop_xbox
 
 #############
 ## Install ##
-#############
+#############message_runtime
 
 ## Mark executable scripts (Python etc.) for installation
 ## not required for python when using catkin_python_setup()
