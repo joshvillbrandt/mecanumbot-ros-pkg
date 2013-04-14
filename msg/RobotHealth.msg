@@ -1,6 +1,6 @@
-uint8 cpu # percent usage
-uint8 mem # percent usage
-uint8 pwr_bit #wall avail, batt1 avail, batt2 avail, wall active, batt1 active, batt2 active, power switch, external switch
+uint16 cpu # loops per second
+uint16 mem # free bytes
+uint8 pwr_bit # wall avail, batt1 avail, batt2 avail, wall active, batt1 active, batt2 active, power switch, external switch
 float32 e_wall # volts
 float32 e_batt1 # volts
 float32 e_batt2 # volts
