@@ -1,5 +1,5 @@
 uint8 cpu # percent usage
-uint16 mem # bytes available
+uint8 mem # percent usage
 float32 t_body # C
 float32 p_body # tbd
 uint8 pwr_bit #wall avail, batt1 avail, batt2 avail, wall active, batt1 active, batt2 active, power switch, external switch
