@@ -3,6 +3,8 @@ mecanumbot
 
 A ROS package for the Mecanumbot robot.
 
+The Mecanumbot robot is a robotic development platform designed and built by Josh Villbrandt. It features a holonomic drive platform with mecanum wheels as well as a 2D laser scanner and an RGB-D camera. Research goals in localization, navigation, and point cloud manipulation. Learn more about the Mecanumbot at [JAV Concepts](http://javconcepts.com/tag/mecanumbot/).
+
 ## Setup
 
 Complete the following steps to install the mecanumbot package on a new robot. If you are not familiar with ROS, please complete the [ROS Tutorials](http://wiki.ros.org/ROS/Tutorials) before continuing.
@@ -26,12 +28,12 @@ Follow the [ROS Hydro Install Guide](http://wiki.ros.org/hydro/Installation/Ubun
     sudo apt-get update
     sudo apt-get install ros-hydro-desktop-full
 
-In addition to the standard desktop package, you'll want to [install the Point Cloud Library](http://pointclouds.org/downloads/linux.html) for the mecanumbot.
+In addition to the standard desktop package, you'll want to install a few other packages that the mecanumbot package depends on. The first few lines of this are from the [PCL Ubuntu install page](http://pointclouds.org/downloads/linux.html).
 
     sudo add-apt-repository ppa:v-launchpad-jochen-sprickerhof-de/pcl
     sudo apt-get update
     sudo apt-get install libpcl-all
-    sudo apt-get install ros-hydro-pcl-ros
+    sudo apt-get install ros-hydro-pcl-ros ros-hydro-joy
 
 To complete the install, source the ROS bash file. You'll probably want to stick this in your bashrc file as well.
 
@@ -79,3 +81,4 @@ TODO
 * figure out I2C bug with Arduino->motor controller comm
 * follow a red ball
 * finish migrating install information from https://github.com/joshvillbrandt/mecanumbot/wiki/Installation
+* add udev rule for xbox remote
