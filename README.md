@@ -9,7 +9,13 @@ Complete the following steps to install the mecanumbot package on a new robot. I
 
 ### Install Ubuntu 12.04
 
-Use your favorite method to install a fresh copy of Ubuntu Precise. After install, modify `/etc/hostname` and `/etc/hosts` to point to a new hostname such as `jvillbrandt-robot`. You'll also want to verify that Avahi MDNS installed correctly by running `ping jvillbrandt-robot.local` from another machine on the local network.
+Use your favorite method to install a fresh copy of Ubuntu Precise. After the install, you'll want to update the OS and install some additional packages.
+
+    sudo apt-get update
+    sudo apt-get upgrade
+    sudo apt-get install git-core gnome-session-fallback
+
+You'll also want to give your robot a custom hostname so that you can easily find it on the network. Modify `/etc/hostname` and `/etc/hosts` to point to a hostname such as `jvillbrandt-robot`. Restart the robot with `sudo shutdown -r now` and verify that Avahi mDNS installed correctly by running `ping jvillbrandt-robot.local` from another machine on the local network.
 
 ### Install ROS
 
@@ -20,7 +26,7 @@ Follow the [ROS Hydro Install Guide](http://wiki.ros.org/hydro/Installation/Ubun
     sudo apt-get update
     sudo apt-get install ros-hydro-desktop-full
 
-In addition to the standard desktop package, you'll want to install the Point Cloud Library for the mecanumbot.
+In addition to the standard desktop package, you'll want to [install the Point Cloud Library](http://pointclouds.org/downloads/linux.html) for the mecanumbot.
 
     sudo add-apt-repository ppa:v-launchpad-jochen-sprickerhof-de/pcl
     sudo apt-get update
@@ -52,8 +58,24 @@ TODO: Set up the custom USB rules
 
 ## Usage
 
+After the initial install or after making any code changes, the mecanumbot package needs to be compiled. You can do this by running:
+
+    cd ~/catkin_ws
+    catkin_make
+
 The core mecanumbot code is started with `roslaunch mecanumbot core.launch`. This will bring up the tranform frames, the laser scanner, the kinect, and the rosserial client to the Arduino onboard the mecanumbot.
 
 Launch rviz with the custom mecanumbot config with 'roslaunch mecanumbot rviz.launch'. To do this on a remote machine, be sure to run `export ROS_MASTER_URI=http://jvillbrandt-robot:11311` in your bash session first.
 
 You can control the mecanumbot with a wireless Xbox remote by running `roslaunch mecanumbot teleop_xbox.launch`. To install have the mecanumbot autonomously follow a red ball, run TODO and TODO instead.
+
+## Auto-start ROS
+
+TODO
+
+## Todo List
+
+* migrate to Hydro
+* figure out I2C bug with Arduino->motor controller comm
+* follow a red ball
+* finish migrating install information from https://github.com/joshvillbrandt/mecanumbot/wiki/Installation
