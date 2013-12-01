@@ -5,6 +5,10 @@ A ROS package for the Mecanumbot robot.
 
 The Mecanumbot robot is a robotic development platform designed and built by Josh Villbrandt. It features a holonomic drive platform with mecanum wheels as well as a 2D laser scanner and an RGB-D camera. Research goals in localization, navigation, and point cloud manipulation. Learn more about the Mecanumbot at [JAV Concepts](http://javconcepts.com/tag/mecanumbot/).
 
+* [Setup](#setup)
+* [Usage](#usage)
+* [Todo List](#todo-list)
+
 ## Setup
 
 Complete the following steps to install the mecanumbot package on a new robot. If you are not familiar with ROS, please complete the [ROS Tutorials](http://wiki.ros.org/ROS/Tutorials) before continuing.
@@ -71,7 +75,7 @@ Launch rviz with the custom mecanumbot config with 'roslaunch mecanumbot rviz.la
 
 You can control the mecanumbot with a wireless Xbox remote by running `roslaunch mecanumbot teleop_xbox.launch`. To install have the mecanumbot autonomously follow a red ball, run TODO and TODO instead.
 
-## Auto-start ROS
+### Auto-start ROS
 
 TODO
 
