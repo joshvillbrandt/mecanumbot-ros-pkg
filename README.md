@@ -19,7 +19,7 @@ Use your favorite method to install a fresh copy of Ubuntu Precise. After the in
 
     sudo apt-get update
     sudo apt-get upgrade
-    sudo apt-get install git-core gnome-session-fallback
+    sudo apt-get install git-core gnome-session-fallback compizconfig-settings-manager
 
 You'll also want to give your robot a custom hostname so that you can easily find it on the network. Modify `/etc/hostname` and `/etc/hosts` to point to a hostname such as `jvillbrandt-robot`. Restart the robot with `sudo shutdown -r now` and verify that Avahi mDNS installed correctly by running `ping jvillbrandt-robot.local` from another machine on the local network.
 
