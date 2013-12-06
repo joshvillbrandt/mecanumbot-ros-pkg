@@ -41,7 +41,7 @@ In addition to the standard desktop package, you'll want to install a few other 
     sudo add-apt-repository ppa:v-launchpad-jochen-sprickerhof-de/pcl
     sudo apt-get update
     sudo apt-get install libpcl-all
-    sudo apt-get install ros-hydro-pcl-ros ros-hydro-joy ros-hydro-openni-camera
+    sudo apt-get install ros-hydro-pcl-ros ros-hydro-joy ros-hydro-openni-camera ros-hydro-openni-launch
 
 To complete the install, source the ROS bash file. You'll probably want to stick this in your bashrc file as well.
 
