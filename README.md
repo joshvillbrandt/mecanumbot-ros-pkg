@@ -7,6 +7,7 @@ The Mecanumbot robot is a robotic development platform designed and built by Jos
 
 * [Setup](#setup)
 * [Usage](#usage)
+* [Extra](#extra)
 * [Todo List](#todo-list)
 
 ## Setup
@@ -41,7 +42,7 @@ In addition to the standard desktop package, you'll want to install a few other 
     sudo add-apt-repository ppa:v-launchpad-jochen-sprickerhof-de/pcl
     sudo apt-get update
     sudo apt-get install libpcl-all
-    sudo apt-get install ros-hydro-pcl-ros ros-hydro-joy ros-hydro-openni-camera ros-hydro-openni-launch ros-hydro-rosserial-arduino ros-hydro-rosserial
+    sudo apt-get install ros-hydro-pcl-ros ros-hydro-joy ros-hydro-openni-camera ros-hydro-openni-launch ros-hydro-rosserial-arduino ros-hydro-rosserial ros-hydro-robot-upstart
 
 To complete the install, source the ROS bash file. You'll probably want to stick this in your bashrc file as well.
 
@@ -91,7 +92,9 @@ You can control the mecanumbot with a wireless Xbox remote by running `roslaunch
 
 ### Auto-start ROS
 
-TODO autostart
+We can automatically launch the `core.launch` launch file by using upstart. Clearpath Robotics made a nice little package called [robot_upstart](https://github.com/clearpathrobotics/robot_upstart) to help with this. With this package installed, simply run the following command:
+
+    rosrun robot_upstart install mecanumbot/launch/core.launch
 
 ## Extra
 
@@ -143,10 +146,9 @@ More information [here](http://arduino.cc/forum/index.php?topic=104492.15 and ht
 * BUG: occasional loss of comm (~once every 5 minutes) with MecanumbotController arduino 
  * it always seems to recover though
 * BUG: occasional "hick-ups" in motor controller - wheels spin for a moment without command
- * suspect this is bad resistors on the I2C bus
+ * suspect this is bad resistors on the I2C bus, check with oscope
 * BUG: laser data goes totally wack every few seconds... this is something with the new hydro driver
-* BUG: udev rule for xbox controller is inconsistant
- * sometimes matches `tbd` instead
 * BUG: not all `light_control` messages are captured by MecanumbotController
  * easy way out is to periodically repeat `light_control` like I do with `cmd_vel`
 * FEATURE: follow a red ball
+* FEATURE: move installation dependencies to the package.xml file and provide a method to auto-install 
