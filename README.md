@@ -41,7 +41,7 @@ In addition to the standard desktop package, you'll want to install a few other 
     sudo add-apt-repository ppa:v-launchpad-jochen-sprickerhof-de/pcl
     sudo apt-get update
     sudo apt-get install libpcl-all
-    sudo apt-get install ros-hydro-pcl-ros ros-hydro-joy ros-hydro-openni-camera ros-hydro-openni-launch
+    sudo apt-get install ros-hydro-pcl-ros ros-hydro-joy ros-hydro-openni-camera ros-hydro-openni-launch ros-hydro-rosserial-arduino ros-hydro-rosserial
 
 To complete the install, source the ROS bash file. You'll probably want to stick this in your bashrc file as well.
 
@@ -64,7 +64,7 @@ Just like with the primary ROS install, you'll want to source the newly created 
     cd ~/catkin_ws/src
     git clone https://github.com/joshvillbrandt/mecanumbot.git
 
-Set up unique identifiers for USB devices by linking to custom device rules. Note that udev uses inotify to monitor for file changes. Since we are linking to the device rules file, changes will only be caught upon a restart or manual reloading (see `man udevadm` for more information.)
+Set up unique identifiers for USB devices by linking to custom device rules.
 
     cd /etc/udev/rules.d/
     sudo ln -s ~/ros/mecanumbot/99-usb-serial.rules 99-usb-serial.rules
@@ -95,16 +95,58 @@ TODO autostart
 
 ## Extra
 
-### New udev Rule
+### New udev Rules
 
-If you need to create new udev rules for addition USB devices, try a command like this:
+Check out [this syntax guide](http://www.reactivated.net/writing_udev_rules.html#syntax) for creating new udev rules. To identify properties of currently plugged in devices, try a command like this:
 
     udevadm info -a -n /dev/ttyUSB0 | grep '{serial}' | head -n1
 
+Rules are automatically ran at startup. To automatically reload the rules without restarting, run `sudo udavadm trigger`.
+
+### Installing Arduino Code
+
+The following steps will allow you to update the onboard Arduino.
+
+    mkdir ~/sketchbook
+    cd ~/sketchbook
+    git clone https://github.com/joshvillbrandt/MecanumbotController
+    cd ~/sketchbook/libraries
+    rm -rf ros_lib
+    rosrun rosserial_arduino make_libraries.py .
+    sudo apt-get install arduino arduino-core 
+
+Now open the MecanumbotController sketch in the Arduino IDE, select board==Arduino Mega 2560 and the correct serial port (try `ls -l /dev | grep USB` and look for `controller`) and click the upload button.
+
+### Fix upower / Arduino Startup Bug
+
+There seems to be a bug with the FTDI chip and the Ubuntu power saving component, upower. We can tell upower not to care about ttyUSB devices so that we can see the FTDI chip on startup. The following notes are taken from http://ten.homelinux.net/productivity/recipes/Arduino%20does%20not%20see%20ttyUSB0.
+
+    sudo vi /lib/udev/rules.d/95-upower-wup.rules
+    and look for an entry like:
+
+    SUBSYSTEM=="tty", SUBSYSTEMS=="usb", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ATTRS{serial}=="A80?????", ENV{UPOWER_VENDOR}="Watts Up, Inc.", ENV{UPOWER_PRODUCT}="Watts Up? Pro", ENV{UP_MONITOR_TYPE}="wup"
+
+    If present, comment the line (prepend the line by a "#")
+
+    sudo /etc/init.d/udev restart
+
+    sudo killall upowerd
+
+    sudo lsof /dev/ttyUSB0
+    should now report nothing
+    Now, Arduino should give access to the USB interface. 
+
+More information [here](http://arduino.cc/forum/index.php?topic=104492.15 and http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=586751).
+
 ## Todo List
 
-* migrate to Hydro
-* figure out I2C bug with Arduino->motor controller comm
-* follow a red ball
-* finish migrating install information from https://github.com/joshvillbrandt/mecanumbot/wiki/Installation
-* add udev rule for xbox remote
+* BUG: occasional loss of comm (~once every 5 minutes) with MecanumbotController arduino 
+ * it always seems to recover though
+* BUG: occasional "hick-ups" in motor controller - wheels spin for a moment without command
+ * suspect this is bad resistors on the I2C bus
+* BUG: laser data goes totally wack every few seconds... this is something with the new hydro driver
+* BUG: udev rule for xbox controller is inconsistant
+ * sometimes matches `tbd` instead
+* BUG: not all `light_control` messages are captured by MecanumbotController
+ * easy way out is to periodically repeat `light_control` like I do with `cmd_vel`
+* FEATURE: follow a red ball
