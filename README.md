@@ -25,6 +25,10 @@ You'll also want to give your robot a custom hostname so that you can easily fin
 
 ### Install ROS
 
+If you have earlier versions of ROS installed, it might be best to uninstall them first. If you have problems with the subsequent install statements, try using aptitude instead of apt-get to resolve dependencies.
+
+    sudo apt-get purge ros-groovy-*
+
 Follow the [ROS Hydro Install Guide](http://wiki.ros.org/hydro/Installation/Ubuntu) to get ROS up an running. This boils down to:
 
     sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu precise main" > /etc/apt/sources.list.d/ros-latest.list'
@@ -37,7 +41,7 @@ In addition to the standard desktop package, you'll want to install a few other 
     sudo add-apt-repository ppa:v-launchpad-jochen-sprickerhof-de/pcl
     sudo apt-get update
     sudo apt-get install libpcl-all
-    sudo apt-get install ros-hydro-pcl-ros ros-hydro-joy
+    sudo apt-get install ros-hydro-pcl-ros ros-hydro-joy ros-hydro-openni-camera ros-hydro-openni-launch
 
 To complete the install, source the ROS bash file. You'll probably want to stick this in your bashrc file as well.
 
@@ -60,7 +64,17 @@ Just like with the primary ROS install, you'll want to source the newly created 
     cd ~/catkin_ws/src
     git clone https://github.com/joshvillbrandt/mecanumbot.git
 
-TODO: Set up the custom USB rules
+Set up unique identifiers for USB devices by linking to custom device rules. Note that udev uses inotify to monitor for file changes. Since we are linking to the device rules file, changes will only be caught upon a restart or manual reloading (see `man udevadm` for more information.)
+
+    cd /etc/udev/rules.d/
+    sudo ln -s ~/ros/mecanumbot/99-usb-serial.rules 99-usb-serial.rules
+
+### Set up the XV-11 Laser
+
+There was recently an XV-11 laser driver package added to Hydro, but it seems useless at the moment. (Try `sudo apt-get install ros-hydro-xv-11-laser-driver` to install it.) Until that works, you can run the following lines to get the laser set up.
+
+    cd ~/catkin_ws/src
+    git clone https://github.com/joshvillbrandt/xv_11_laser_driver.git
 
 ## Usage
 
@@ -77,7 +91,15 @@ You can control the mecanumbot with a wireless Xbox remote by running `roslaunch
 
 ### Auto-start ROS
 
-TODO
+TODO autostart
+
+## Extra
+
+### New udev Rule
+
+If you need to create new udev rules for addition USB devices, try a command like this:
+
+    udevadm info -a -n /dev/ttyUSB0 | grep '{serial}' | head -n1
 
 ## Todo List
 
