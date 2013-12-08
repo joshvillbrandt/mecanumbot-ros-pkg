@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+
+<launch>
+    <node pkg="mecanumbot" type="ball_tracker" name="ball_tracker" output="screen">
+        <remap from="cloud_in" to="/camera/depth_registered/points"/>
+        <remap from="cloud_out" to="/tracker/filtered_cloud"/>
+        <!-- <param name="~scale_x" value="0.000885" />
+        <param name="~scale_th" value="0.0032" /> -->
+    </node>
+</launch>

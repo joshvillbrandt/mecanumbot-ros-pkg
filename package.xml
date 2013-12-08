@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>mecanumbot</name>
-  <version>0.0.0</version>
+  <version>0.2.0</version>
   <description>The package to run the mecanumbot.</description>
 
   <maintainer email="josh@javconcepts.com">Josh Villbrandt</maintainer>
@@ -19,6 +19,7 @@
   <build_depend>nav_msgs</build_depend>
   <build_depend>pcl_conversions</build_depend>
   <build_depend>pcl_ros</build_depend>
+  <build_depend>libpcl-all-dev</build_depend>
 
   <run_depend>roscpp</run_depend>
   <run_depend>tf</run_depend>
@@ -27,6 +28,7 @@
   <run_depend>nav_msgs</run_depend>
   <run_depend>pcl_conversions</run_depend>
   <run_depend>pcl_ros</run_depend>
+  <run_depend>libpcl-all</run_depend>
 
   <build_depend>message_generation</build_depend>
   <run_depend>message_runtime</run_depend>

@@ -8,6 +8,7 @@ The Mecanumbot robot is a robotic development platform designed and built by Jos
 * [Setup](#setup)
 * [Usage](#usage)
 * [Extra](#extra)
+* [Releases](#releases)
 * [Todo List](#todo-list)
 
 ## Setup
@@ -42,7 +43,7 @@ In addition to the standard desktop package, you'll want to install a few other 
     sudo add-apt-repository ppa:v-launchpad-jochen-sprickerhof-de/pcl
     sudo apt-get update
     sudo apt-get install libpcl-all
-    sudo apt-get install ros-hydro-pcl-ros ros-hydro-joy ros-hydro-openni-camera ros-hydro-openni-launch ros-hydro-rosserial-arduino ros-hydro-rosserial ros-hydro-robot-upstart
+    sudo apt-get install ros-hydro-pcl-ros ros-hydro-joy ros-hydro-openni-camera ros-hydro-openni-launch ros-hydro-rosserial-arduino ros-hydro-rosserial ros-hydro-robot-upstart ros-hydro-rqt-robot-plugins
 
 To complete the install, source the ROS bash file. You'll probably want to stick this in your bashrc file as well.
 
@@ -118,7 +119,7 @@ The following steps will allow you to update the onboard Arduino.
     rosrun rosserial_arduino make_libraries.py .
     sudo apt-get install arduino arduino-core 
 
-Now open the MecanumbotController sketch in the Arduino IDE, select board==Arduino Mega 2560 and the correct serial port (try `ls -l /dev | grep USB` and look for `controller`) and click the upload button.
+Now open the [MecanumbotController](https://github.com/joshvillbrandt/MecanumbotController) sketch in the Arduino IDE, select board==Arduino Mega 2560 and the correct serial port (try `ls -l /dev | grep USB` and look for `controller`) and click the upload button.
 
 ### Fix upower / Arduino Startup Bug
 
@@ -141,14 +142,25 @@ There seems to be a bug with the FTDI chip and the Ubuntu power saving component
 
 More information [here](http://arduino.cc/forum/index.php?topic=104492.15 and http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=586751).
 
+## Releases
+
+This package uses [semantic versioning](http://semver.org/).
+
+### [v0.2.0](https://github.com/joshvillbrandt/Library/releases/tag/v0.2.0)
+
+Updating for Hydro. New ball tracking with target follower.
+
+### [v0.1.0](https://github.com/joshvillbrandt/Library/releases/tag/v0.1.0)
+
+Last working version of the mecanumbot package for ROS Groovy.
+
 ## Todo List
 
 * BUG: occasional loss of comm (~once every 5 minutes) with MecanumbotController arduino 
- * it always seems to recover though
+ * sometimes does not recover
 * BUG: occasional "hick-ups" in motor controller - wheels spin for a moment without command
  * suspect this is bad resistors on the I2C bus, check with oscope
 * BUG: laser data goes totally wack every few seconds... this is something with the new hydro driver
-* BUG: not all `light_control` messages are captured by MecanumbotController
- * easy way out is to periodically repeat `light_control` like I do with `cmd_vel`
+* BUG: occasional random `light_control` messages
 * FEATURE: follow a red ball
 * FEATURE: move installation dependencies to the package.xml file and provide a method to auto-install 
