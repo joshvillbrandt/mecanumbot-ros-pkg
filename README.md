@@ -117,10 +117,36 @@ The following steps will allow you to update the onboard Arduino.
 
 Now open the MecanumbotController sketch in the Arduino IDE, select board==Arduino Mega 2560 and the correct serial port (try `ls -l /dev | grep USB` and look for `controller`) and click the upload button.
 
+### Fix upower / Arduino Startup Bug
+
+There seems to be a bug with the FTDI chip and the Ubuntu power saving component, upower. We can tell upower not to care about ttyUSB devices so that we can see the FTDI chip on startup. The following notes are taken from http://ten.homelinux.net/productivity/recipes/Arduino%20does%20not%20see%20ttyUSB0.
+
+    sudo vi /lib/udev/rules.d/95-upower-wup.rules
+    and look for an entry like:
+
+    SUBSYSTEM=="tty", SUBSYSTEMS=="usb", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ATTRS{serial}=="A80?????", ENV{UPOWER_VENDOR}="Watts Up, Inc.", ENV{UPOWER_PRODUCT}="Watts Up? Pro", ENV{UP_MONITOR_TYPE}="wup"
+
+    If present, comment the line (prepend the line by a "#")
+
+    sudo /etc/init.d/udev restart
+
+    sudo killall upowerd
+
+    sudo lsof /dev/ttyUSB0
+    should now report nothing
+    Now, Arduino should give access to the USB interface. 
+
+More information [here](http://arduino.cc/forum/index.php?topic=104492.15 and http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=586751).
+
 ## Todo List
 
-* migrate to Hydro
-* figure out I2C bug with Arduino->motor controller comm
-* follow a red ball
-* finish migrating install information from https://github.com/joshvillbrandt/mecanumbot/wiki/Installation
-* add udev rule for xbox remote
+* BUG: occasional loss of comm (~once every 5 minutes) with MecanumbotController arduino 
+ * it always seems to recover though
+* BUG: occasional "hick-ups" in motor controller - wheels spin for a moment without command
+ * suspect this is bad resistors on the I2C bus
+* BUG: laser data goes totally wack every few seconds... this is something with the new hydro driver
+* BUG: udev rule for xbox controller is inconsistant
+ * sometimes matches `tbd` instead
+* BUG: not all `light_control` messages are captured by MecanumbotController
+ * easy way out is to periodically repeat `light_control` like I do with `cmd_vel`
+* FEATURE: follow a red ball
