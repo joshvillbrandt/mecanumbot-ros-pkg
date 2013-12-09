@@ -13,12 +13,14 @@
 #include <ros/console.h>
 #include <sensor_msgs/PointCloud2.h>
 #include <mecanumbot/LightControl.h>
-// #include "cloud_helpers.cpp"
+#include "cloud_helpers.cpp"
 // PCL specific includes
 #include <pcl_conversions/pcl_conversions.h>
-#include <pcl/point_cloud.h>
-// temp
+// #include <pcl/point_cloud.h>
+#include <pcl/point_types.h>
 #include <pcl/filters/voxel_grid.h>
+#include <pcl/filters/extract_indices.h>
+#include <pcl/filters/statistical_outlier_removal.h>
 
 class BallTracker
 {
@@ -41,6 +43,8 @@ class BallTracker
         // int linear_y_left_button, linear_y_right_button, boost_button, enable_button;
         // double linear_x_scale, linear_y_scale, angular_z_scale, preboost_scale, force_pub_rate;
 
+        pcl::ExtractIndices<pcl::PointXYZRGB> extract;
+        cloud_helpers::Color red;
         // geometry_msgs::Twist msg;
         // mecanumbot::LightControl light_msg;
         // ros::Time last_pub_time;
@@ -81,6 +85,14 @@ BallTracker::BallTracker()//:
     // ROS_INFO_STREAM("param linear_y_right_button: " << linear_y_right_button);
     // ROS_INFO_STREAM("param boost_button: " << boost_button);
     // ROS_INFO_STREAM("param enable_button: " << enable_button);
+	
+	// Define red color
+	red.r_u = 100;
+	red.r_s = 24;
+	red.g_u = 25;
+	red.g_s = 25;
+	red.b_u = 15;
+	red.b_s = 15;
 
     // connects subs and pubs
     cloud_sub = nh.subscribe("cloud_in", 1, &BallTracker::cloudCallback, this);
@@ -150,21 +162,43 @@ void BallTracker::cloudCallback(const pcl::PCLPointCloud2ConstPtr& cloud_in)
     // else light_msg.mood_color = 0;
     // light_pub.publish(light_msg);
 
-    // Pick out red points
-    // pcl::PointIndices::Ptr redPoints = cloud_helpers.filterColor(cloud, red);
-    // extract.setInputCloud (cloud);
-    // extract.setIndices (redPoints);
-    // extract.setNegative (false);
-    // extract.filter (*cloud);
-
     // downsample
-    pcl::PCLPointCloud2 cloud_filtered;
-    pcl::VoxelGrid<pcl::PCLPointCloud2> sor;
-    sor.setInputCloud(cloud_in);
-    sor.setLeafSize(0.05, 0.05, 0.05);
-    sor.filter(cloud_filtered);
+    // pcl::PCLPointCloud2::Ptr cloud_downsampled (new pcl::PCLPointCloud2);
+    // pcl::VoxelGrid<pcl::PCLPointCloud2> sor;
+    // sor.setInputCloud(cloud_in);
+    // sor.setLeafSize(0.05, 0.05, 0.05);
+    // sor.filter(*cloud_downsampled);
 
-    cloud_pub.publish(cloud_filtered);
+    // convert
+    pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud_filtered (new pcl::PointCloud<pcl::PointXYZRGB>);
+    pcl::fromPCLPointCloud2(*cloud_in, *cloud_filtered);
+
+    // Pick out red points
+    pcl::PointIndices::Ptr redPoints = cloud_helpers::filterColor(cloud_filtered, red);
+    extract.setInputCloud(cloud_filtered);
+    extract.setIndices(redPoints);
+    extract.setNegative(false);
+    extract.filter(*cloud_filtered);
+
+	// Statistical outlier filter (Useful for carpet)
+	pcl::StatisticalOutlierRemoval<pcl::PointXYZRGB> sor;
+	sor.setInputCloud(cloud_filtered);
+	sor.setMeanK(50);
+	sor.setStddevMulThresh(0.1);
+	sor.filter(*cloud_filtered);
+	
+	// Segment by distance
+	// std::vector<pcl::PointCloud<pcl::PointXYZRGB>::Ptr> clusters;
+	// clusters = cloud_helpers::segmentByDistance(cloud_filtered);
+	// if(clusters.size() > 0) cloud_filtered = clusters[0];
+	// //std::cerr << "clusters: " << clusters.size() << std::endl;
+
+    // convert
+    pcl::PCLPointCloud2::Ptr cloud_out (new pcl::PCLPointCloud2);
+    pcl::toPCLPointCloud2(*cloud_filtered, *cloud_out);
+
+    // publish
+    cloud_pub.publish(cloud_out);
 }
 
 int main(int argc, char** argv)

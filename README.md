@@ -177,11 +177,13 @@ Last working version of the mecanumbot package for ROS Groovy.
 ## Todo List
 
 * BUG: occasional loss of comm (~once every 5 minutes) with MecanumbotController arduino 
- * sometimes does not recover
+ * sometimes does not recover when sending lots of commands via the remote
+ * sometimes does not connect at all!
  * monitor arduino cpu and mem with rqt plot
 * BUG: occasional "hick-ups" in motor controller - wheels spin for a moment without command
  * suspect this is bad resistors on the I2C bus, check with oscope
 * BUG: laser data goes totally wack every few seconds... this is something with the new hydro driver
 * BUG: occasional random `light_control` messages
 * FEATURE: follow a red ball
-* FEATURE: move installation dependencies to the package.xml file and provide a method to auto-install 
+* FEATURE: move installation dependencies to the package.xml file and provide a method to auto-install
+* FEATURE: calibrate Kinect using [this guide](http://wiki.ros.org/openni_launch/Tutorials/IntrinsicCalibration?action=show&redirect=openni_camera%252Fcalibration)
