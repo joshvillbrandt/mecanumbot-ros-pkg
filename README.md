@@ -43,7 +43,7 @@ In addition to the standard desktop package, you'll want to install a few other 
     sudo add-apt-repository ppa:v-launchpad-jochen-sprickerhof-de/pcl
     sudo apt-get update
     sudo apt-get install libpcl-all
-    sudo apt-get install ros-hydro-pcl-ros ros-hydro-joy ros-hydro-openni-camera ros-hydro-openni-launch ros-hydro-rosserial-arduino ros-hydro-rosserial ros-hydro-robot-upstart ros-hydro-rqt-robot-plugins
+    sudo apt-get install ros-hydro-pcl-ros ros-hydro-joy ros-hydro-openni-camera ros-hydro-openni-launch ros-hydro-rosserial-arduino ros-hydro-rosserial ros-hydro-robot-upstart ros-hydro-rqt-robot-plugins screen
 
 To complete the install, source the ROS bash file. You'll probably want to stick this in your bashrc file as well.
 
@@ -85,11 +85,31 @@ After the initial install or after making any code changes, the mecanumbot packa
     cd ~/catkin_ws
     catkin_make
 
-The core mecanumbot code is started with `roslaunch mecanumbot core.launch`. This will bring up the tranform frames, the laser scanner, the kinect, and the rosserial client to the Arduino onboard the mecanumbot.
+The core mecanumbot code is started with `roslaunch mecanumbot core.launch`. This will bring up the transform publisher, the laser scanner, and the rosserial client to the Arduino onboard the mecanumbot.
 
 Launch rviz with the custom mecanumbot config with 'roslaunch mecanumbot rviz.launch'. To do this on a remote machine, be sure to run `export ROS_MASTER_URI=http://jvillbrandt-robot:11311` in your bash session first.
 
 You can control the mecanumbot with a wireless Xbox remote by running `roslaunch mecanumbot teleop_xbox.launch`. To install have the mecanumbot autonomously follow a red ball, run TODO and TODO instead.
+
+### Using Screen
+
+During the development, it is often easiest to manually launch the pertinent parts of the robot instead of starting everything on bootup. Using `screen` over SSH is the preferred manor of manual launching since it is robust against disconnects. To start the robot with this method, open a terminal on another computer (not the robot) and type the following:
+
+    ssh -Y jvillbrandt-robot.local
+    screen
+    roslaunch mecanumbot core.launch
+    # [ctrl-a] [c]
+    roslaunch mecanumbot kinect.launch
+    # [ctrl-a] [c]
+    # other stuff here
+    # [ctrl-a] [n] # go to the next window
+
+If you drop the connection to the robot, reconnect with this:
+
+    screen -ls
+    screen -r DESIRED_SCREEN_ID
+
+To learn more about screen, check out [this tutorial](http://www.rackaid.com/resources/linux-screen-tutorial-and-how-to/).
 
 ### Auto-start ROS
 
