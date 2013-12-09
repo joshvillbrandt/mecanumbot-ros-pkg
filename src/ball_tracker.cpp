@@ -5,14 +5,20 @@
  * Description: This application extracts a red ball from a point cloud.
  */
 
+// Hydro tips:
+// http://wiki.ros.org/pcl/Tutorials#line-197
+// http://wiki.ros.org/hydro/Migration#PCL
+
 #include <ros/ros.h>
 #include <ros/console.h>
 #include <sensor_msgs/PointCloud2.h>
 #include <mecanumbot/LightControl.h>
 // PCL specific includes
-#include <pcl/conversions.h>
+#include <pcl_conversions/pcl_conversions.h>
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
+// temp
+#include <pcl/filters/voxel_grid.h>
 
 class BallTracker
 {
@@ -21,7 +27,7 @@ class BallTracker
         void spin();
 
     private:
-        void cloudCallback(const sensor_msgs::PointCloud2ConstPtr& cloud_in);
+        void cloudCallback(const pcl::PCLPointCloud2ConstPtr& cloud_in);
 
         ros::NodeHandle nh;
         ros::Publisher cloud_pub;
@@ -103,7 +109,7 @@ void BallTracker::spin()
     }
 }
 
-void BallTracker::cloudCallback(const sensor_msgs::PointCloud2ConstPtr& cloud_in)
+void BallTracker::cloudCallback(const pcl::PCLPointCloud2ConstPtr& cloud_in)
 {
     // enable / disable cmd_vel commands
     // if(enable_button >= 0) {
@@ -143,8 +149,22 @@ void BallTracker::cloudCallback(const sensor_msgs::PointCloud2ConstPtr& cloud_in
     // else if(joy->buttons[0] == 1) light_msg.mood_color = 1;
     // else light_msg.mood_color = 0;
     // light_pub.publish(light_msg);
-    sensor_msgs::PointCloud2 cloud_out = *cloud_in;
-    cloud_pub.publish(cloud_out);
+
+    // Pick out red points
+    // pcl::PointIndices::Ptr redPoints = cloud_helpers.filterColor(cloud, red);
+    // extract.setInputCloud (cloud);
+    // extract.setIndices (redPoints);
+    // extract.setNegative (false);
+    // extract.filter (*cloud);
+
+    // resizing from ROS tutorial
+    pcl::PCLPointCloud2 cloud_filtered;
+    pcl::VoxelGrid<pcl::PCLPointCloud2> sor;
+    sor.setInputCloud(cloud_in);
+    sor.setLeafSize(0.01, 0.01, 0.01);
+    sor.filter(cloud_filtered);
+
+    cloud_pub.publish(cloud_filtered);
 }
 
 int main(int argc, char** argv)
