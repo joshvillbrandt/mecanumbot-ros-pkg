@@ -178,6 +178,7 @@ Last working version of the mecanumbot package for ROS Groovy.
 
 * BUG: occasional loss of comm (~once every 5 minutes) with MecanumbotController arduino 
  * sometimes does not recover
+ * monitor arduino cpu and mem with rqt plot
 * BUG: occasional "hick-ups" in motor controller - wheels spin for a moment without command
  * suspect this is bad resistors on the I2C bus, check with oscope
 * BUG: laser data goes totally wack every few seconds... this is something with the new hydro driver

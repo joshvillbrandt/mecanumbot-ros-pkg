@@ -13,10 +13,10 @@
 #include <ros/console.h>
 #include <sensor_msgs/PointCloud2.h>
 #include <mecanumbot/LightControl.h>
+// #include "cloud_helpers.cpp"
 // PCL specific includes
 #include <pcl_conversions/pcl_conversions.h>
 #include <pcl/point_cloud.h>
-#include <pcl/point_types.h>
 // temp
 #include <pcl/filters/voxel_grid.h>
 
@@ -157,11 +157,11 @@ void BallTracker::cloudCallback(const pcl::PCLPointCloud2ConstPtr& cloud_in)
     // extract.setNegative (false);
     // extract.filter (*cloud);
 
-    // resizing from ROS tutorial
+    // downsample
     pcl::PCLPointCloud2 cloud_filtered;
     pcl::VoxelGrid<pcl::PCLPointCloud2> sor;
     sor.setInputCloud(cloud_in);
-    sor.setLeafSize(0.01, 0.01, 0.01);
+    sor.setLeafSize(0.05, 0.05, 0.05);
     sor.filter(cloud_filtered);
 
     cloud_pub.publish(cloud_filtered);
