@@ -20,6 +20,8 @@
 #include <pcl/filters/voxel_grid.h>
 #include <pcl/filters/extract_indices.h>
 #include <pcl/filters/statistical_outlier_removal.h>
+// PCL-ROS auto type conversions
+#include <pcl_ros/point_cloud.h>
 
 class BallTracker
 {
@@ -33,7 +35,7 @@ class BallTracker
         ros::NodeHandle nh;
         ros::Publisher cloud_pub;
         ros::Subscriber cloud_sub;
-        //ros::Publisher light_pub;
+        ros::Publisher light_pub;
         // broadcaster
         // rviz marker
         
@@ -44,8 +46,7 @@ class BallTracker
 
         pcl::ExtractIndices<pcl::PointXYZRGB> extract;
         cloud_helpers::Color red;
-        // geometry_msgs::Twist msg;
-        // mecanumbot::LightControl light_msg;
+        mecanumbot::LightControl light_msg;
         // ros::Time last_pub_time;
         // ros::Duration force_pub_period;
 };
@@ -95,13 +96,12 @@ BallTracker::BallTracker()//:
 
     // connects subs and pubs
     cloud_sub = nh.subscribe("cloud_in", 1, &BallTracker::cloudCallback, this);
-    cloud_pub = nh.advertise<sensor_msgs::PointCloud2>("cloud_out", 1);
-    // light_pub = nh.advertise<mecanumbot::LightControl>("light_control", 1);
-
-    // intial message that might be pushed out by the force_pub_rate
-    // msg.linear.x = 0; // m/s
-    // msg.angular.z = 0; // rad/s
-    // msg.linear.y = 0; // m/s
+    cloud_pub = nh.advertise<pcl::PointCloud<pcl::PointXYZRGB> >("cloud_out", 1);
+    light_pub = nh.advertise<mecanumbot::LightControl>("light_control", 1);
+    
+    // static light message values
+    light_msg.forward_brightness = 0;
+    light_msg.internal_brightness = 0;
 }
 
 void BallTracker::spin()
@@ -152,14 +152,6 @@ void BallTracker::cloudCallback(const pcl::PCLPointCloud2ConstPtr& cloud_in)
     // last_pub_time = ros::Time::now();
     
     // // lights
-    // light_msg.forward_brightness = 255 - ((joy->axes[5] + 1) * 255 / 2);
-    // if(joy->buttons[2] == 1) light_msg.internal_brightness = 127;
-    // else light_msg.internal_brightness = 0;
-    // if(joy->buttons[1] == 1) light_msg.mood_color = 3;
-    // else if(joy->buttons[3] == 1) light_msg.mood_color = 2;
-    // else if(joy->buttons[0] == 1) light_msg.mood_color = 1;
-    // else light_msg.mood_color = 0;
-    // light_pub.publish(light_msg);
 
     // downsample
     // pcl::PCLPointCloud2::Ptr cloud_downsampled (new pcl::PCLPointCloud2);
@@ -192,12 +184,13 @@ void BallTracker::cloudCallback(const pcl::PCLPointCloud2ConstPtr& cloud_in)
     ROS_INFO_STREAM("clusters: " << clusters.size());
     if(clusters.size() > 0) cloud_filtered = clusters[0];
 
-    // convert
-    pcl::PCLPointCloud2::Ptr cloud_out (new pcl::PCLPointCloud2);
-    pcl::toPCLPointCloud2(*cloud_filtered, *cloud_out);
+    // publish filtered cloud for debugging
+    cloud_pub.publish(*cloud_filtered);
 
-    // publish
-    cloud_pub.publish(cloud_out);
+    // publish lights to indicate status
+    if(clusters.size() > 0) light_msg.mood_color = 1;
+    else light_msg.mood_color = 3;
+    light_pub.publish(light_msg);
 }
 
 int main(int argc, char** argv)
