@@ -9,6 +9,7 @@
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 // #include <pcl/PCLPointCloud2.h>
+#include <pcl/filters/filter.h>
 #include <pcl/PointIndices.h>
 #include <pcl/kdtree/kdtree.h>
 #include <pcl/filters/extract_indices.h>
@@ -62,6 +63,12 @@ namespace cloud_helpers {
     std::vector<pcl::PointCloud<pcl::PointXYZRGB>::Ptr>
     segmentByDistance(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud)
     {
+        // remove NaNs
+        ROS_INFO_STREAM("size: " << cloud->points.size());
+        std::vector<int> indices;
+        pcl::removeNaNFromPointCloud(*cloud, *cloud, indices);
+        ROS_INFO_STREAM("size: " << cloud->points.size());
+
         // Creating the KdTree object and perform Euclidean distance search
         //pcl::KdTree<pcl::PointXYZRGB>::Ptr tree (new pcl::KdTreeFLANN<pcl::PointXYZRGB>);
         pcl::search::KdTree<pcl::PointXYZRGB>::Ptr tree (new pcl::search::KdTree<pcl::PointXYZRGB>);
@@ -69,7 +76,7 @@ namespace cloud_helpers {
 
         std::vector<pcl::PointIndices> cluster_indices;
         pcl::EuclideanClusterExtraction<pcl::PointXYZRGB> ec;
-        ec.setClusterTolerance (0.01); // 1cm
+        ec.setClusterTolerance (0.05); // 5cm
         ec.setMinClusterSize (50);
         ec.setMaxClusterSize (25000);
         ec.setSearchMethod (tree);
@@ -85,7 +92,7 @@ namespace cloud_helpers {
                 cloud_cluster->points.push_back (cloud->points[*pit]); //
             cloud_cluster->width = cloud_cluster->points.size ();
             cloud_cluster->height = 1;
-            cloud_cluster->is_dense = true;
+            cloud_cluster->is_dense = false;
             cloud_cluster->header = cloud->header;
 
             clusters.push_back(cloud_cluster);

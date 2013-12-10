@@ -16,7 +16,6 @@
 #include "cloud_helpers.cpp"
 // PCL specific includes
 #include <pcl_conversions/pcl_conversions.h>
-// #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 #include <pcl/filters/voxel_grid.h>
 #include <pcl/filters/extract_indices.h>
@@ -85,14 +84,14 @@ BallTracker::BallTracker()//:
     // ROS_INFO_STREAM("param linear_y_right_button: " << linear_y_right_button);
     // ROS_INFO_STREAM("param boost_button: " << boost_button);
     // ROS_INFO_STREAM("param enable_button: " << enable_button);
-	
-	// Define red color
-	red.r_u = 100;
-	red.r_s = 24;
-	red.g_u = 25;
-	red.g_s = 25;
-	red.b_u = 15;
-	red.b_s = 15;
+    
+    // Define red color
+    red.r_u = 100;
+    red.r_s = 24;
+    red.g_u = 25;
+    red.g_s = 25;
+    red.b_u = 15;
+    red.b_s = 15;
 
     // connects subs and pubs
     cloud_sub = nh.subscribe("cloud_in", 1, &BallTracker::cloudCallback, this);
@@ -180,18 +179,18 @@ void BallTracker::cloudCallback(const pcl::PCLPointCloud2ConstPtr& cloud_in)
     extract.setNegative(false);
     extract.filter(*cloud_filtered);
 
-	// Statistical outlier filter (Useful for carpet)
-	pcl::StatisticalOutlierRemoval<pcl::PointXYZRGB> sor;
-	sor.setInputCloud(cloud_filtered);
-	sor.setMeanK(50);
-	sor.setStddevMulThresh(0.1);
-	sor.filter(*cloud_filtered);
-	
-	// Segment by distance
-	// std::vector<pcl::PointCloud<pcl::PointXYZRGB>::Ptr> clusters;
-	// clusters = cloud_helpers::segmentByDistance(cloud_filtered);
-	// if(clusters.size() > 0) cloud_filtered = clusters[0];
-	// //std::cerr << "clusters: " << clusters.size() << std::endl;
+    // Statistical outlier filter (Useful for carpet)
+    pcl::StatisticalOutlierRemoval<pcl::PointXYZRGB> sor;
+    sor.setInputCloud(cloud_filtered);
+    sor.setMeanK(50);
+    sor.setStddevMulThresh(0.01); // smaller is more restrictive
+    sor.filter(*cloud_filtered);
+    
+    // Segment by distance
+    std::vector<pcl::PointCloud<pcl::PointXYZRGB>::Ptr> clusters;
+    clusters = cloud_helpers::segmentByDistance(cloud_filtered);
+    ROS_INFO_STREAM("clusters: " << clusters.size());
+    if(clusters.size() > 0) cloud_filtered = clusters[0];
 
     // convert
     pcl::PCLPointCloud2::Ptr cloud_out (new pcl::PCLPointCloud2);
