@@ -39,60 +39,27 @@ class BallTracker
         ros::Publisher marker_pub;
         ros::Publisher light_pub;
         // broadcaster
-        // rviz marker
         
-        // bool enabled, flipped;
-        // int linear_x_axis, linear_y_axis, angular_z_axis;
-        // int linear_y_left_button, linear_y_right_button, boost_button, enable_button;
-        // double linear_x_scale, linear_y_scale, angular_z_scale, preboost_scale, force_pub_rate;
-
         pcl::ExtractIndices<pcl::PointXYZRGB> extract;
         cloud_helpers::Color red;
         mecanumbot::LightControl light_msg;
         visualization_msgs::Marker marker;
-        // ros::Time last_pub_time;
-        // ros::Duration force_pub_period;
 };
 
 
-BallTracker::BallTracker()//:
-    // enabled(false),
-    // flipped(false)
+BallTracker::BallTracker()
 {
     // load parameters
     ros::NodeHandle nh_priv("~");
-    // nh_priv.param("linear_x_scale", linear_x_scale, 0.1); // scaling from integer 10 (1g in m/s/s); 0.1 -> 1m/s
     // nh_priv.param("linear_y_scale", linear_y_scale, 0.8);
-    // nh_priv.param("angular_z_scale", angular_z_scale, 0.2);
-    // nh_priv.param("preboost_scale", preboost_scale, 1.0);
-    // nh_priv.param("force_pub_rate", force_pub_rate, 10.0); // Hz
-    // nh_priv.param("linear_x_axis", linear_x_axis, -1);
-    // nh_priv.param("linear_y_axis", linear_y_axis, -1);
-    // nh_priv.param("angular_z_axis", angular_z_axis, -1);
-    // nh_priv.param("linear_y_left_button", linear_y_left_button, -1);
-    // nh_priv.param("linear_y_right_button", linear_y_right_button, -1);
-    // nh_priv.param("boost_button", boost_button, -1);
-    // nh_priv.param("enable_button", enable_button, -1);
-    // if(enable_button < 0) enabled = true;
     
     // lets show em what we got
-    // ROS_INFO_STREAM("param linear_x_scale: " << linear_x_scale);
     // ROS_INFO_STREAM("param linear_y_scale: " << linear_y_scale);
-    // ROS_INFO_STREAM("param angular_z_scale: " << angular_z_scale);
-    // ROS_INFO_STREAM("param preboost_scale: " << preboost_scale);
-    // ROS_INFO_STREAM("param force_pub_rate: " << force_pub_rate);
-    // ROS_INFO_STREAM("param linear_x_axis: " << linear_x_axis);
-    // ROS_INFO_STREAM("param linear_y_axis: " << linear_y_axis);
-    // ROS_INFO_STREAM("param angular_z_axis: " << angular_z_axis);
-    // ROS_INFO_STREAM("param linear_y_left_button: " << linear_y_left_button);
-    // ROS_INFO_STREAM("param linear_y_right_button: " << linear_y_right_button);
-    // ROS_INFO_STREAM("param boost_button: " << boost_button);
-    // ROS_INFO_STREAM("param enable_button: " << enable_button);
     
     // Define red color
-    red.r_u = 100;
+    red.r_u = 105;
     red.r_s = 24;
-    red.g_u = 25;
+    red.g_u = 20;
     red.g_s = 25;
     red.b_u = 15;
     red.b_s = 15;
@@ -127,12 +94,6 @@ void BallTracker::spin()
 {
     while(ros::ok())
     {
-        // xbox controller doesn't transmit if value is the same, force publishing the last value
-        // if(ros::Time::now() > last_pub_time + force_pub_period) {
-  //           vel_pub.publish(msg);
-        //     last_pub_time = ros::Time::now();
-        // }
-        
         // call all waiting callbacks
         ros::Duration(0.1).sleep();
         ros::spinOnce();
@@ -141,14 +102,6 @@ void BallTracker::spin()
 
 void BallTracker::cloudCallback(const pcl::PCLPointCloud2ConstPtr& cloud_in)
 {
-    // enable / disable cmd_vel commands
-    // if(enable_button >= 0) {
-    //     if(joy->buttons[enable_button] == 0) flipped = false;
-    //     if(joy->buttons[enable_button] == 1 && !flipped) {
-    //         enabled = !enabled;
-    //         flipped = true;
-    //     }
-    // }
 
     // convert
     pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud_filtered (new pcl::PointCloud<pcl::PointXYZRGB>);
