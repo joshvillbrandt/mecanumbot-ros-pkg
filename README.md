@@ -69,7 +69,7 @@ Just like with the primary ROS install, you'll want to source the newly created 
 Set up unique identifiers for USB devices by linking to custom device rules.
 
     cd /etc/udev/rules.d/
-    sudo ln -s ~/ros/mecanumbot/99-usb-serial.rules 99-usb-serial.rules
+    sudo ln -s ~/catkin_ws/src/mecanumbot/extra/99-usb-serial.rules 99-usb-serial.rules
 
 ### Set up the XV-11 Laser
 
