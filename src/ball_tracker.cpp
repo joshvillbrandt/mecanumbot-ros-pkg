@@ -11,6 +11,7 @@
 
 #include <ros/ros.h>
 #include <ros/console.h>
+#include <tf/transform_broadcaster.h>
 #include <sensor_msgs/PointCloud2.h>
 #include <mecanumbot/LightControl.h>
 #include <visualization_msgs/Marker.h>
@@ -38,7 +39,7 @@ class BallTracker
         ros::Publisher cloud_pub;
         ros::Publisher marker_pub;
         ros::Publisher light_pub;
-        // broadcaster
+        tf::TransformBroadcaster broadcaster;
         
         pcl::ExtractIndices<pcl::PointXYZRGB> extract;
         cloud_helpers::Color red;
@@ -127,20 +128,32 @@ void BallTracker::cloudCallback(const pcl::PCLPointCloud2ConstPtr& cloud_in)
     ROS_INFO_STREAM("clusters: " << clusters.size());
     if(clusters.size() > 0) cloud_filtered = clusters[0];
 
+
     // publish filtered cloud for debugging
     cloud_pub.publish(*cloud_filtered);
     
-    // Update rviz marker
+    // Update rviz marker and transform
+    marker.header = pcl_conversions::fromPCL(cloud_filtered->header);
     if(clusters.size() > 0) {
-	    uint8_t r, g, b;
-	    pcl::PointXYZRGB avg = cloud_helpers::averageCloud(cloud_filtered, r, g, b);
-	    marker.action = visualization_msgs::Marker::ADD;
-	    marker.pose.position.x = avg.x + 0.03; // fits the cloud better, because camera isn't calibrated
-	    marker.pose.position.y = avg.y;
-	    marker.pose.position.z = avg.z + 0.04; // add a couple cm since we only see the front
+    	// find cloud average
+        uint8_t r, g, b;
+        pcl::PointXYZRGB avg = cloud_helpers::averageCloud(cloud_filtered, r, g, b);
+        avg.x += 0.03; // m; adjust x position because my kinect isn't calibrated
+        avg.z += 0.04; // m; adjust z because we are only seeing the front portion
+
+        // broadcast transform
+        tf::Transform transform;
+        transform.setOrigin( tf::Vector3(avg.x, avg.y, avg.z) );
+        transform.setRotation( tf::Quaternion(0, 0, 0) );
+        broadcaster.sendTransform(tf::StampedTransform(transform, marker.header.stamp, marker.header.frame_id, "target"));
+
+        // update marker properties
+        marker.action = visualization_msgs::Marker::ADD;
+        marker.pose.position.x = avg.x;
+        marker.pose.position.y = avg.y;
+        marker.pose.position.z = avg.z;
     }
     else marker.action = visualization_msgs::Marker::DELETE;
-    marker.header = pcl_conversions::fromPCL(cloud_filtered->header);
     marker_pub.publish(marker);
 
     // publish lights to indicate status
