@@ -60,6 +60,42 @@ namespace cloud_helpers {
         b = (uint8_t)((rgb_val_) & 0x000000ff);
     }
 
+    pcl::PointXYZRGB
+    averageCloud(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud, uint8_t &r_ret, uint8_t &g_ret, uint8_t &b_ret)
+    {
+        pcl::PointXYZRGB avg;
+        avg.x = 0; avg.y = 0; avg.z = 0;
+        long r_avg = 0, g_avg = 0, b_avg = 0;
+
+        for(size_t i = 0; i < cloud->points.size(); i++)
+        {
+            if(!isnan(cloud->points[i].x) && !isnan(cloud->points[i].y) && !isnan(cloud->points[i].z)) {
+                avg.x += cloud->points[i].x;
+                avg.y += cloud->points[i].y;
+                avg.z += cloud->points[i].z;
+
+                uint8_t r, g, b;
+                extractRGB(cloud->points[i], r, g, b);
+                r_avg += r;
+                g_avg += g;
+                b_avg += b;
+            }
+        }
+        
+        //std::cerr << "Average of " << cloud->points.size() << " points: "
+        //  << avg.x << " " << avg.x << " " << avg.x << std::endl;
+
+        avg.x /= cloud->points.size();
+        avg.y /= cloud->points.size();
+        avg.z /= cloud->points.size();
+
+        r_ret = r_avg / cloud->points.size();
+        g_ret = g_avg / cloud->points.size();
+        b_ret = b_avg / cloud->points.size();
+
+        return avg;
+    }
+
     std::vector<pcl::PointCloud<pcl::PointXYZRGB>::Ptr>
     segmentByDistance(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud)
     {

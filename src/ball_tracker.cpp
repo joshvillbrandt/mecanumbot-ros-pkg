@@ -13,6 +13,7 @@
 #include <ros/console.h>
 #include <sensor_msgs/PointCloud2.h>
 #include <mecanumbot/LightControl.h>
+#include <visualization_msgs/Marker.h>
 #include "cloud_helpers.cpp"
 // PCL specific includes
 #include <pcl_conversions/pcl_conversions.h>
@@ -33,8 +34,9 @@ class BallTracker
         void cloudCallback(const pcl::PCLPointCloud2ConstPtr& cloud_in);
 
         ros::NodeHandle nh;
-        ros::Publisher cloud_pub;
         ros::Subscriber cloud_sub;
+        ros::Publisher cloud_pub;
+        ros::Publisher marker_pub;
         ros::Publisher light_pub;
         // broadcaster
         // rviz marker
@@ -47,6 +49,7 @@ class BallTracker
         pcl::ExtractIndices<pcl::PointXYZRGB> extract;
         cloud_helpers::Color red;
         mecanumbot::LightControl light_msg;
+        visualization_msgs::Marker marker;
         // ros::Time last_pub_time;
         // ros::Duration force_pub_period;
 };
@@ -97,7 +100,23 @@ BallTracker::BallTracker()//:
     // connects subs and pubs
     cloud_sub = nh.subscribe("cloud_in", 1, &BallTracker::cloudCallback, this);
     cloud_pub = nh.advertise<pcl::PointCloud<pcl::PointXYZRGB> >("cloud_out", 1);
+    marker_pub = nh.advertise<visualization_msgs::Marker>("marker", 1);
     light_pub = nh.advertise<mecanumbot::LightControl>("light_control", 1);
+    
+    // static marker values
+    marker.ns = "targets";
+    marker.id = 0;
+    marker.type = visualization_msgs::Marker::SPHERE;
+    marker.pose.position.x = 0;
+    marker.pose.position.y = 0;
+    marker.pose.position.z = 0;
+    marker.scale.x = 0.16;
+    marker.scale.y = 0.16;
+    marker.scale.z = 0.16;
+    marker.color.r = 1.0f;
+    marker.color.g = 1.0f;
+    marker.color.b = 0.0f;
+    marker.color.a = 0.8f;
     
     // static light message values
     light_msg.forward_brightness = 0;
@@ -130,55 +149,26 @@ void BallTracker::cloudCallback(const pcl::PCLPointCloud2ConstPtr& cloud_in)
     //         flipped = true;
     //     }
     // }
-    
-    // // generate cmd_vel from accelerometers
-    // msg.linear.x = 0; // m/s
-    // msg.angular.z = 0; // rad/s
-    // msg.linear.y = 0; // m/s
-    // if(enabled) {
-    //     if(linear_x_axis >= 0) msg.linear.x = linear_x_scale * joy->axes[linear_x_axis]; // m/s
-    //     if(linear_y_axis >= 0) msg.linear.y = linear_y_scale * joy->axes[linear_y_axis]; // m/s
-    //     else if(linear_y_left_button >= 0 && joy->buttons[linear_y_left_button] == 1) msg.linear.y = linear_y_scale; // m/s
-    //     else if(linear_y_right_button >= 0 && joy->buttons[linear_y_right_button] == 1) msg.linear.y = -1 * linear_y_scale; // m/s
-    //     if(angular_z_axis >= 0) msg.angular.z = -1 * angular_z_scale * joy->axes[angular_z_axis]; // rad/s
-        
-    //     if(boost_button >= 0 && joy->buttons[boost_button] == 0) {
-    //         msg.linear.x = msg.linear.x * preboost_scale;
-    //         msg.linear.y = msg.linear.y * preboost_scale;
-    //         msg.angular.z = msg.angular.z * preboost_scale;
-    //     }
-    // }
-    // vel_pub.publish(msg);
-    // last_pub_time = ros::Time::now();
-    
-    // // lights
-
-    // downsample
-    // pcl::PCLPointCloud2::Ptr cloud_downsampled (new pcl::PCLPointCloud2);
-    // pcl::VoxelGrid<pcl::PCLPointCloud2> sor;
-    // sor.setInputCloud(cloud_in);
-    // sor.setLeafSize(0.05, 0.05, 0.05);
-    // sor.filter(*cloud_downsampled);
 
     // convert
     pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud_filtered (new pcl::PointCloud<pcl::PointXYZRGB>);
     pcl::fromPCLPointCloud2(*cloud_in, *cloud_filtered);
 
-    // Pick out red points
+    // pick out red points
     pcl::PointIndices::Ptr redPoints = cloud_helpers::filterColor(cloud_filtered, red);
     extract.setInputCloud(cloud_filtered);
     extract.setIndices(redPoints);
     extract.setNegative(false);
     extract.filter(*cloud_filtered);
 
-    // Statistical outlier filter (Useful for carpet)
+    // statistical outlier filter (Useful for carpet)
     pcl::StatisticalOutlierRemoval<pcl::PointXYZRGB> sor;
     sor.setInputCloud(cloud_filtered);
     sor.setMeanK(50);
     sor.setStddevMulThresh(0.01); // smaller is more restrictive
     sor.filter(*cloud_filtered);
     
-    // Segment by distance
+    // segment by distance
     std::vector<pcl::PointCloud<pcl::PointXYZRGB>::Ptr> clusters;
     clusters = cloud_helpers::segmentByDistance(cloud_filtered);
     ROS_INFO_STREAM("clusters: " << clusters.size());
@@ -186,6 +176,19 @@ void BallTracker::cloudCallback(const pcl::PCLPointCloud2ConstPtr& cloud_in)
 
     // publish filtered cloud for debugging
     cloud_pub.publish(*cloud_filtered);
+    
+    // Update rviz marker
+    if(clusters.size() > 0) {
+	    uint8_t r, g, b;
+	    pcl::PointXYZRGB avg = cloud_helpers::averageCloud(cloud_filtered, r, g, b);
+	    marker.action = visualization_msgs::Marker::ADD;
+	    marker.pose.position.x = avg.x + 0.03; // fits the cloud better, because camera isn't calibrated
+	    marker.pose.position.y = avg.y;
+	    marker.pose.position.z = avg.z + 0.04; // add a couple cm since we only see the front
+    }
+    else marker.action = visualization_msgs::Marker::DELETE;
+    marker.header = pcl_conversions::fromPCL(cloud_filtered->header);
+    marker_pub.publish(marker);
 
     // publish lights to indicate status
     if(clusters.size() > 0) light_msg.mood_color = 1;
