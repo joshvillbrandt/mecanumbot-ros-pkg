@@ -103,7 +103,6 @@ void BallTracker::spin()
 
 void BallTracker::cloudCallback(const pcl::PCLPointCloud2ConstPtr& cloud_in)
 {
-
     // convert
     pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud_filtered (new pcl::PointCloud<pcl::PointXYZRGB>);
     pcl::fromPCLPointCloud2(*cloud_in, *cloud_filtered);

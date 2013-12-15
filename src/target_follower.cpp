@@ -10,6 +10,7 @@
 #include <tf/transform_listener.h>
 #include <geometry_msgs/Twist.h>
 #include <math.h>
+#include <string>
 
 // constrain function
 // http://stackoverflow.com/questions/8941262/constrain-function-port-from-arduino
@@ -31,6 +32,7 @@ class TargetFollower
         ros::Publisher vel_pub;
         tf::TransformListener listener;
 
+        std::string base_link_frame, target_frame;
         double follow_distance, linear_x_scale, linear_x_max, angular_z_scale, angular_z_max;
         geometry_msgs::Twist msg;
 };
@@ -39,6 +41,8 @@ TargetFollower::TargetFollower()
 {
     // load parameters
     ros::NodeHandle nh_priv("~");
+    nh_priv.param<std::string>("base_link_frame", base_link_frame, "/base_link");
+    nh_priv.param<std::string>("target_frame", target_frame, "/target");
     nh_priv.param("follow_distance", follow_distance, 1.0); // m
     nh_priv.param("linear_x_scale", linear_x_scale, 0.5);
     nh_priv.param("linear_x_max", linear_x_max, 1.0); // assumed symmetric around 0
@@ -46,6 +50,8 @@ TargetFollower::TargetFollower()
     nh_priv.param("angular_z_max", angular_z_max, 2.0);; // assumed symmetric around 0
     
     // lets show em what we got
+    ROS_INFO_STREAM("param base_link_frame: " << base_link_frame);
+    ROS_INFO_STREAM("param target_frame: " << target_frame);
     ROS_INFO_STREAM("param follow_distance: " << follow_distance);
     ROS_INFO_STREAM("param linear_x_scale: " << linear_x_scale);
     ROS_INFO_STREAM("param linear_x_max: " << linear_x_max);
@@ -70,7 +76,7 @@ void TargetFollower::spin()
         // check for transform from robot to target
         tf::StampedTransform transform;
         try {
-            listener.lookupTransform("/base_link", "/target", ros::Time(0), transform);
+            listener.lookupTransform(base_link_frame, target_frame, ros::Time(0), transform);
             //ROS_INFO_STREAM("transform: x=" << transform.getOrigin().x() << ", y=" << transform.getOrigin().y());
 
             // calculate the position error
