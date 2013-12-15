@@ -72,6 +72,7 @@ add_executable(odometry_publisher src/odometry_publisher.cpp)
 add_executable(teleop_xbox src/teleop_xbox.cpp)
 add_executable(ball_tracker src/ball_tracker.cpp)
 add_executable(target_follower src/target_follower.cpp)
+add_executable(target_average_filter src/target_average_filter.cpp)
 
 ## Add dependencies to the executable
 # add_dependencies(mecanumbot_node ${PROJECT_NAME})
@@ -87,6 +88,9 @@ target_link_libraries(ball_tracker
   ${catkin_LIBRARIES}
 )
 target_link_libraries(target_follower
+  ${catkin_LIBRARIES}
+)
+target_link_libraries(target_average_filter
   ${catkin_LIBRARIES}
 )
 
