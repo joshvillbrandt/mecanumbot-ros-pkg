@@ -72,7 +72,7 @@ void TargetFilter::spin()
                 transforms.push_back(latest);
             }
             catch(tf::TransformException ex) {
-                ROS_ERROR("%s",ex.what());
+                //ROS_ERROR("%s",ex.what());
             }
 
             // compute the average

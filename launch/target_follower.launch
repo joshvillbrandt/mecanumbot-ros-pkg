@@ -7,5 +7,6 @@
         <param name="~linear_x_max" value="1.0" type="double"/>
         <param name="~angular_z_scale" value="2.0" type="double"/>
         <param name="~angular_z_max" value="2.0" type="double"/>
+        <param name="~target_frame" value="/target_filtered" type="string"/>
     </node>
 </launch>
