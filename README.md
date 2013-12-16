@@ -185,7 +185,6 @@ Last working version of the mecanumbot package for ROS Groovy.
 * BUG: laser data goes totally wack every few seconds... this is something with the new hydro driver
 * BUG: occasional random `light_control` messages
 * BUG: kinect udev rule doesn't work on jvillbrandt-bedroom
-* FEATURE: follow a red ball with average filter
 * FEATURE: follow a red ball with Kalman-Bucy filter
 * FEATURE: throttle point cloud (http://wiki.ros.org/topic_tools/throttle)
 * FEATURE: move installation dependencies to the package.xml file and provide a method to auto-install

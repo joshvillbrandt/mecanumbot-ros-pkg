@@ -39,7 +39,7 @@ TargetFilter::TargetFilter()
     nh_priv.param<std::string>("base_link_frame", base_link_frame, "/base_link");
     nh_priv.param<std::string>("target_frame", target_frame, "/target");
     nh_priv.param<std::string>("target_filtered_frame", target_filtered_frame, "/target_filtered");
-    nh_priv.param("window_size", window_size_in, 5.0); // s
+    nh_priv.param("window_size", window_size_in, 1.0); // s
     nh_priv.param("pub_rate", pub_rate, 10.0); // Hz
     
     // lets show em what we got
@@ -76,24 +76,25 @@ void TargetFilter::spin()
             }
 
             // compute the average
-            tf::Transform average;
-            average.setOrigin( tf::Vector3(0, 0, 0) );
-            average.setRotation( tf::Quaternion(0, 0, 0) );
-            // TODO
+            tf::Vector3 origin_average = tf::Vector3(0, 0, 0);
+            for(std::list<tf::StampedTransform>::iterator it=transforms.begin(); it != transforms.end(); ++it) {
+                origin_average += it->getOrigin();
+            }
 
             // publish the average
             if(transforms.size() > 0) {
-                tf::StampedTransform latest = transforms.back(); // get last element
-                //tf::StampedTransform latest = transforms[transforms.size() -1];
-                broadcaster.sendTransform(tf::StampedTransform(average, latest.stamp_, latest.frame_id_, target_filtered_frame));
-            }
+                tf::Transform average;
+                average.setOrigin( origin_average / transforms.size());
+                average.setRotation( tf::Quaternion(0, 0, 0) );
 
-            // update last published time
-            last_pub_time = now;
+                tf::StampedTransform latest = transforms.back(); // get last element
+                broadcaster.sendTransform(tf::StampedTransform(average, latest.stamp_, latest.frame_id_, target_filtered_frame));
+                last_pub_time = now;
+            }
         }
+        else ros::Duration(0.1).sleep();
         
         // call all waiting callbacks
-        ros::Duration(0.1).sleep();
         ros::spinOnce();
     }
 }
