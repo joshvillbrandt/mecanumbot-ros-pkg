@@ -166,11 +166,11 @@ More information [here](http://arduino.cc/forum/index.php?topic=104492.15 and ht
 
 This package uses [semantic versioning](http://semver.org/).
 
-### [v0.2.0](https://github.com/joshvillbrandt/Library/releases/tag/v0.2.0)
+### [v0.2.0](https://github.com/joshvillbrandt/mecanumbot/releases/tag/v0.2.0)
 
 Updating for Hydro. New ball tracking with target follower.
 
-### [v0.1.0](https://github.com/joshvillbrandt/Library/releases/tag/v0.1.0)
+### [v0.1.0](https://github.com/joshvillbrandt/mecanumbot/releases/tag/v0.1.0)
 
 Last working version of the mecanumbot package for ROS Groovy.
 
