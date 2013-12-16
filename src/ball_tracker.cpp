@@ -58,7 +58,7 @@ BallTracker::BallTracker()
     // ROS_INFO_STREAM("param linear_y_scale: " << linear_y_scale);
     
     // Define red color
-    red.r_u = 105;
+    red.r_u = 85;
     red.r_s = 24;
     red.g_u = 20;
     red.g_s = 25;
