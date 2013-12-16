@@ -12,6 +12,7 @@
 
     <!-- start tracker filter -->
     <node pkg="mecanumbot" type="target_average_filter" name="target_average_filter" output="screen">
-        <param name="~window_size" value="0.5" />
+        <param name="~parent_frame" value="/odom" type="string"/>
+        <param name="~window_size" value="0.5" type="double" />
     </node>
 </launch>

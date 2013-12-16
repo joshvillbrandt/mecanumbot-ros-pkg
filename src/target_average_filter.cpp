@@ -22,7 +22,7 @@ class TargetFilter
         tf::TransformBroadcaster broadcaster;
         tf::TransformListener listener;
 
-        std::string base_link_frame, target_frame, target_filtered_frame;
+        std::string parent_frame, target_frame, target_filtered_frame;
         ros::Duration window_size, pub_period;
 
         ros::Time last_pub_time;
@@ -36,14 +36,14 @@ TargetFilter::TargetFilter()
 
     // load parameters
     ros::NodeHandle nh_priv("~");
-    nh_priv.param<std::string>("base_link_frame", base_link_frame, "/base_link");
+    nh_priv.param<std::string>("parent_frame", parent_frame, "/base_link");
     nh_priv.param<std::string>("target_frame", target_frame, "/target");
     nh_priv.param<std::string>("target_filtered_frame", target_filtered_frame, "/target_filtered");
     nh_priv.param("window_size", window_size_in, 1.0); // s
     nh_priv.param("pub_rate", pub_rate, 10.0); // Hz
     
     // lets show em what we got
-    ROS_INFO_STREAM("param base_link_frame: " << base_link_frame);
+    ROS_INFO_STREAM("param parent_frame: " << parent_frame);
     ROS_INFO_STREAM("param target_frame: " << target_frame);
     ROS_INFO_STREAM("param target_filtered_frame: " << target_filtered_frame);
     ROS_INFO_STREAM("param window_size: " << window_size_in);
@@ -68,7 +68,7 @@ void TargetFilter::spin()
             // grab the latest transform
             try {
                 tf::StampedTransform latest;
-                listener.lookupTransform(base_link_frame, target_frame, ros::Time(0), latest);
+                listener.lookupTransform(parent_frame, target_frame, ros::Time(0), latest);
                 transforms.push_back(latest);
             }
             catch(tf::TransformException ex) {
