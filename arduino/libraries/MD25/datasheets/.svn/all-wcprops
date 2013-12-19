@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/!svn/ver/288/arduino/trunk/libraries/MD25/datasheets
+END
+MD25 I2C Documentation.pdf
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/!svn/ver/177/arduino/trunk/libraries/MD25/datasheets/MD25%20I2C%20Documentation.pdf
+END
+MD25 Serial Documentation.pdf
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/!svn/ver/177/arduino/trunk/libraries/MD25/datasheets/MD25%20Serial%20Documentation.pdf
+END
+A3950.pdf
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/!svn/ver/288/arduino/trunk/libraries/MD25/datasheets/A3950.pdf
+END
+EMG30 Data.pdf
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/!svn/ver/177/arduino/trunk/libraries/MD25/datasheets/EMG30%20Data.pdf
+END
+MD25 Technical Documentation.pdf
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/!svn/ver/177/arduino/trunk/libraries/MD25/datasheets/MD25%20Technical%20Documentation.pdf
+END

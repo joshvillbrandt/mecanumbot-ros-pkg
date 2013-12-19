@@ -1,0 +1,4 @@
+MD25	KEYWORD1
+reset	KEYWORD2
+brightness	KEYWORD2
+print	KEYWORD2
