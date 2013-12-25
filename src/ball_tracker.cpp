@@ -1,9 +1,9 @@
 /*
- * File: mecanumbot/src/ball_tracker.cpp
- * Author: Josh Villbrandt <josh@javconcepts.com>
- * Date: December 2013
- * Description: This application extracts a red ball from a point cloud.
- */
+* File: mecanumbot/src/ball_tracker.cpp
+* Author: Josh Villbrandt <josh@javconcepts.com>
+* Date: December 2013
+* Description: This application extracts a red ball from a point cloud.
+*/
 
 // Hydro tips:
 // http://wiki.ros.org/pcl/Tutorials#line-197
@@ -18,7 +18,9 @@
 #include "cloud_helpers.cpp"
 // PCL specific includes
 #include <pcl_conversions/pcl_conversions.h>
+#include <pcl/point_types_conversion.h>
 #include <pcl/point_types.h>
+#include <pcl/filters/passthrough.h>
 #include <pcl/filters/voxel_grid.h>
 #include <pcl/filters/extract_indices.h>
 #include <pcl/filters/statistical_outlier_removal.h>
@@ -41,8 +43,7 @@ class BallTracker
         ros::Publisher light_pub;
         tf::TransformBroadcaster broadcaster;
         
-        pcl::ExtractIndices<pcl::PointXYZRGB> extract;
-        cloud_helpers::Color red;
+        pcl::ExtractIndices<pcl::PointXYZHSV> extract;
         mecanumbot::LightControl light_msg;
         visualization_msgs::Marker marker;
 };
@@ -56,14 +57,6 @@ BallTracker::BallTracker()
     
     // lets show em what we got
     // ROS_INFO_STREAM("param linear_y_scale: " << linear_y_scale);
-    
-    // Define red color
-    red.r_u = 85;
-    red.r_s = 24;
-    red.g_u = 20;
-    red.g_s = 25;
-    red.b_u = 15;
-    red.b_s = 15;
 
     // connects subs and pubs
     cloud_sub = nh.subscribe("cloud_in", 1, &BallTracker::cloudCallback, this);
@@ -103,62 +96,132 @@ void BallTracker::spin()
 
 void BallTracker::cloudCallback(const pcl::PCLPointCloud2ConstPtr& cloud_in)
 {
-    // convert
-    pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud_filtered (new pcl::PointCloud<pcl::PointXYZRGB>);
-    pcl::fromPCLPointCloud2(*cloud_in, *cloud_filtered);
+    // convert to RGB from input
+    pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud_in2 (new pcl::PointCloud<pcl::PointXYZRGB>);
+    pcl::fromPCLPointCloud2(*cloud_in, *cloud_in2);
+
+    // convert to HSV for processing
+    pcl::PointCloud<pcl::PointXYZHSV>::Ptr cloud_filtered (new pcl::PointCloud<pcl::PointXYZHSV>);
+    cloud_helpers::PointCloudXYZRGBtoXYZHSV(*cloud_in2, *cloud_filtered);
 
     // pick out red points
-    pcl::PointIndices::Ptr redPoints = cloud_helpers::filterColor(cloud_filtered, red);
+    pcl::PointIndices::Ptr redPoints = cloud_helpers::filterByHue(cloud_filtered, 350, 20);
     extract.setInputCloud(cloud_filtered);
     extract.setIndices(redPoints);
     extract.setNegative(false);
     extract.filter(*cloud_filtered);
 
+    // filter saturation
+    pcl::PassThrough<pcl::PointXYZHSV> pass;
+    pass.setInputCloud (cloud_filtered);
+    pass.setFilterFieldName ("s");
+    pass.setFilterLimits (0.8, 1.0);
+    pass.setFilterLimitsNegative (false);
+    pass.filter (*cloud_filtered);
+
+    // filter value
+    pass.setInputCloud (cloud_filtered);
+    pass.setFilterFieldName ("v");
+    pass.setFilterLimits (0.1, 0.95);
+    pass.setFilterLimitsNegative (false);
+    pass.filter (*cloud_filtered);
+
     // statistical outlier filter (Useful for carpet)
-    pcl::StatisticalOutlierRemoval<pcl::PointXYZRGB> sor;
+    pcl::StatisticalOutlierRemoval<pcl::PointXYZHSV> sor;
     sor.setInputCloud(cloud_filtered);
     sor.setMeanK(50);
     sor.setStddevMulThresh(0.01); // smaller is more restrictive
     sor.filter(*cloud_filtered);
     
     // segment by distance
-    std::vector<pcl::PointCloud<pcl::PointXYZRGB>::Ptr> clusters;
-    clusters = cloud_helpers::segmentByDistance(cloud_filtered);
-    ROS_INFO_STREAM("clusters: " << clusters.size());
-    if(clusters.size() > 0) cloud_filtered = clusters[0];
+    std::vector<pcl::PointIndices> cluster_indices;
+    cluster_indices = cloud_helpers::segmentByDistance(cloud_filtered);
+    ROS_INFO_STREAM("clusters: " << cluster_indices.size());
+    //std::vector<pcl::PointCloud<pcl::PointXYZHSV>::Ptr> clusters;
+    //if(clusters.size() > 0) cloud_filtered = clusters[0];
 
+    // chose one cluster as the target
+
+
+    
+    // // Update rviz marker and transform
+    // marker.header = pcl_conversions::fromPCL(cloud_filtered->header);
+    // if(clusters.size() > 0) {
+    //     // find cloud average
+    //     uint8_t r, g, b;
+    //     pcl::PointXYZHSV avg = cloud_helpers::averageCloud(cloud_filtered, r, g, b);
+    //     avg.x += 0.03; // m; adjust x position because my kinect isn't calibrated
+    //     avg.z += 0.04; // m; adjust z because we are only seeing the front portion
+
+    //     // broadcast transform
+    //     tf::Transform transform;
+    //     transform.setOrigin( tf::Vector3(avg.x, avg.y, avg.z) );
+    //     transform.setRotation( tf::Quaternion(0, 0, 0) );
+    //     broadcaster.sendTransform(tf::StampedTransform(transform, marker.header.stamp, marker.header.frame_id, "target"));
+
+    //     // update marker properties
+    //     marker.action = visualization_msgs::Marker::ADD;
+    //     marker.pose.position.x = avg.x;
+    //     marker.pose.position.y = avg.y;
+    //     marker.pose.position.z = avg.z;
+    // }
+    // else marker.action = visualization_msgs::Marker::DELETE;
+    // marker_pub.publish(marker);
 
     // publish filtered cloud for debugging
-    cloud_pub.publish(*cloud_filtered);
-    
-    // Update rviz marker and transform
-    marker.header = pcl_conversions::fromPCL(cloud_filtered->header);
-    if(clusters.size() > 0) {
-    	// find cloud average
-        uint8_t r, g, b;
-        pcl::PointXYZRGB avg = cloud_helpers::averageCloud(cloud_filtered, r, g, b);
-        avg.x += 0.03; // m; adjust x position because my kinect isn't calibrated
-        avg.z += 0.04; // m; adjust z because we are only seeing the front portion
+    if(cloud_pub.getNumSubscribers() > 0) {
+        // convert to RGB for output
+        pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud_out (new pcl::PointCloud<pcl::PointXYZRGB>);
+        cloud_helpers::PointCloudXYZHSVtoXYZRGB(*cloud_filtered, *cloud_out);
 
-        // broadcast transform
-        tf::Transform transform;
-        transform.setOrigin( tf::Vector3(avg.x, avg.y, avg.z) );
-        transform.setRotation( tf::Quaternion(0, 0, 0) );
-        broadcaster.sendTransform(tf::StampedTransform(transform, marker.header.stamp, marker.header.frame_id, "target"));
-
-        // update marker properties
-        marker.action = visualization_msgs::Marker::ADD;
-        marker.pose.position.x = avg.x;
-        marker.pose.position.y = avg.y;
-        marker.pose.position.z = avg.z;
+        // ROS_INFO_STREAM("cloud size: " << cloud_filtered->points.size());
+        // ROS_INFO_STREAM("average hue: " << cloud_helpers::calculateHue(cloud_filtered));
+        cloud_pub.publish(*cloud_out);
     }
-    else marker.action = visualization_msgs::Marker::DELETE;
-    marker_pub.publish(marker);
 
-    // publish lights to indicate status
-    if(clusters.size() > 0) light_msg.mood_color = 1;
-    else light_msg.mood_color = 3;
-    light_pub.publish(light_msg);
+    // publish markers
+    if(marker_pub.getNumSubscribers() > 0) {
+        // cloud
+        marker = cloud_helpers::getCloudMarker(cloud_filtered, cluster_indices[0]);
+        marker.header = pcl_conversions::fromPCL(cloud_filtered->header);
+        marker.pose.orientation.w = 1;
+        marker.ns = "targets";
+        marker.id = 1;//current_marker_id_++;
+        marker_pub.publish(marker);
+
+        // extract cloud
+        pcl::PointIndices::Ptr cluster_indices_ptr (new pcl::PointIndices(cluster_indices[0]));
+        pcl::PointCloud<pcl::PointXYZHSV>::Ptr target_cloud (new pcl::PointCloud<pcl::PointXYZHSV>);
+        extract.setInputCloud(cloud_filtered);
+        extract.setIndices(cluster_indices_ptr);
+        extract.setNegative(false);
+        extract.filter(*target_cloud);
+
+        // label
+        pcl::PointXYZHSV avg = cloud_helpers::getCloudAverage(target_cloud);
+        visualization_msgs::Marker marker_label;
+        marker_label.ns = "target_labels";
+        marker_label.id = marker.id;
+        marker_label.action = visualization_msgs::Marker::ADD;
+        marker_label.type = visualization_msgs::Marker::TEXT_VIEW_FACING;
+        marker_label.lifetime = ros::Duration();
+        marker_label.text = "#" + boost::to_string(marker_label.id);
+        marker_label.header = pcl_conversions::fromPCL(cloud_filtered->header);
+        marker_label.pose.position.x = avg.x;
+        marker_label.pose.position.y = avg.y - 0.15;
+        marker_label.pose.position.z = avg.z;
+        //marker_label.color = marker.color;
+        marker_label.color.r = marker_label.color.g = marker_label.color.b = marker_label.color.a = 1.0;
+        ROS_INFO_STREAM("label: " << avg.x << ", " << avg.y << ", " << avg.z);
+        marker_label.scale.z = 0.1;
+        marker_pub.publish(marker_label);
+    }
+
+    // // publish lights to indicate status
+    // if(clusters.size() > 0) light_msg.mood_color = 1;
+    // else light_msg.mood_color = 3;
+    // light_pub.publish(light_msg);
+
 }
 
 int main(int argc, char** argv)
