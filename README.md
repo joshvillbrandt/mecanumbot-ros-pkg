@@ -1,5 +1,5 @@
-mecanumbot
-==========
+mecanumbot-ros-pkg
+==================
 
 A ROS package for the Mecanumbot robot.
 
@@ -176,6 +176,8 @@ Last working version of the mecanumbot package for ROS Groovy.
 
 ## Todo List
 
+### Mecanumbot Core
+
 * BUG: occasional loss of comm (~once every 5 minutes) with MecanumbotController arduino 
  * sometimes does not recover when sending lots of commands via the remote
  * sometimes does not connect at all!
@@ -185,7 +187,16 @@ Last working version of the mecanumbot package for ROS Groovy.
 * BUG: laser data goes totally wack every few seconds... this is something with the new hydro driver
 * BUG: occasional random `light_control` messages
 * BUG: kinect udev rule doesn't work on jvillbrandt-bedroom
-* FEATURE: follow a red ball with Kalman-Bucy filter
-* FEATURE: throttle point cloud (http://wiki.ros.org/topic_tools/throttle)
+* FEATURE: change `light_control` to an action instead of a continuous message
+* FEATURE: add support for the top plate LEDs in `light_control`
+* FEATURE: add fields brightness, mode, and color for each type of light in `light_control`
 * FEATURE: move installation dependencies to the package.xml file and provide a method to auto-install
+* FEATURE: auto-start ros with [ros-system-daemon-hydro](https://github.com/TurtleBot-Mfg/ros-system-daemon-hydro)
+
+### Ball Tracker
+
+* FEATURE: try using a Kalman filter to better track a ball
+* FEATURE: throttle point cloud (http://wiki.ros.org/topic_tools/throttle)
 * FEATURE: calibrate Kinect using [this guide](http://wiki.ros.org/openni_launch/Tutorials/IntrinsicCalibration?action=show&redirect=openni_camera%252Fcalibration)
+* FEATURE: register and identify targets between frames
+* FEATURE: experiment with [difference of normals segmentation](http://pointclouds.org/documentation/tutorials/don_segmentation.php)
