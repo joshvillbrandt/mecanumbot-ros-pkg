@@ -45,7 +45,7 @@ In addition to the standard desktop package, you'll want to install a few other 
     sudo apt-get install libpcl-all
     sudo apt-get install ros-hydro-pcl-ros ros-hydro-joy ros-hydro-openni-camera ros-hydro-openni-launch ros-hydro-rosserial-arduino ros-hydro-rosserial ros-hydro-robot-upstart ros-hydro-rqt-robot-plugins screen
 
-To complete the install, source the ROS bash file. You'll probably want to stick this in your bashrc file as well.
+To complete the install, source the ROS bash file. You'll probably want to stick this in your `.bashrc` file as well.
 
     source /opt/ros/hydro/setup.bash
 
