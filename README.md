@@ -189,6 +189,7 @@ Last working version of the mecanumbot package for ROS Groovy.
 * FEATURE: move installation dependencies to the package.xml file and provide a method to auto-install
 * FEATURE: auto-start ros with [ros-system-daemon-hydro](https://github.com/TurtleBot-Mfg/ros-system-daemon-hydro)
 * FEATURE: pipe Mecanumbot-power system telemetry through to ROS (input voltages, bus voltage, bus current, button states, etc)
+* FEATURE: make Mecanumbot-power powering off by holding the button more apparent by shutting down before button release
 
 ### Robot LEDs
 * BUG: occasional random `light_control` messages, or so it seems anyway
