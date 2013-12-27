@@ -194,10 +194,10 @@ Last working version of the mecanumbot package for ROS Groovy.
 * BUG: occasional random `light_control` messages, or so it seems anyway
 * FEATURE: change `light_control` to an action instead of a continuous message
 * FEATURE: add support for the top plate LEDs in `light_control`
-* change message format:
+* change message/action format:
  * unit8 strand (0=all, 1=headlights, 2=internal, 3=sides, 4=topdeck)
  * unit8 pattern (0=off, 1=on, 2=flashing on/off, 3=quick double flash, 4= in to out/front to back/cylon, 5 = ou to in/back to front)
- * unit8 color (0=white, 1=red, 2=orange, 3=yellow, 4=green, 5=cyan, 6=blue, 7=purple, 8=magenta)
+ * unit8 color (0=white, 1=red, 2=orange, 3=yellow, 4=green, 5=cyan, 6=blue, 7=purple, 8=magenta, 9=rainbow)
  * unit8 brightness (0=0%, 255=100%)
 
 ### Teleop Xbox Controller
