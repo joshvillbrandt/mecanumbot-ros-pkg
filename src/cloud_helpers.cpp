@@ -6,6 +6,7 @@
  */
 
 #include <visualization_msgs/Marker.h>
+#include <std_msgs/ColorRGBA.h>
 // PCL specific includes
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
@@ -50,7 +51,8 @@ namespace cloud_helpers {
         return avg;
     }
 
-    std::vector<pcl::PointIndices> 
+    //template <typename PointT>
+    std::vector<pcl::PointIndices::Ptr> 
     segmentByDistance(pcl::PointCloud<pcl::PointXYZHSV>::Ptr cloud)
     {
         // remove NaNs
@@ -58,47 +60,69 @@ namespace cloud_helpers {
         pcl::removeNaNFromPointCloud(*cloud, *cloud, indices);
 
         // Creating the KdTree object and perform Euclidean distance search
-        //pcl::KdTree<pcl::PointXYZHSV>::Ptr tree (new pcl::KdTreeFLANN<pcl::PointXYZHSV>);
         pcl::search::KdTree<pcl::PointXYZHSV>::Ptr tree (new pcl::search::KdTree<pcl::PointXYZHSV>);
         tree->setInputCloud (cloud);
 
+        // perform extraction
         std::vector<pcl::PointIndices> cluster_indices;
         pcl::EuclideanClusterExtraction<pcl::PointXYZHSV> ec;
-        ec.setClusterTolerance (0.05); // 5cm
+        ec.setClusterTolerance (0.03); // 3cm
         ec.setMinClusterSize (50);
         ec.setMaxClusterSize (25000); // for reference, Kinect returns 307200 points
         ec.setSearchMethod (tree);
         ec.setInputCloud (cloud);
         ec.extract (cluster_indices);
 
-        return cluster_indices;
+        // convert indicies to pointers
+        std::vector<pcl::PointIndices::Ptr> cluster_indice_ptrs;
+        cluster_indice_ptrs.resize(cluster_indices.size());
+        for(size_t i = 0; i < cluster_indices.size(); i++) {
+            pcl::PointIndices::Ptr cluster_indices_ptr (new pcl::PointIndices(cluster_indices[i]));
+            cluster_indice_ptrs[i] = cluster_indices_ptr;
+        }
+
+        return cluster_indice_ptrs;
     }
 
     std::vector<pcl::PointCloud<pcl::PointXYZHSV>::Ptr>
-    extractClusters(pcl::PointCloud<pcl::PointXYZHSV>::Ptr cloud, std::vector<pcl::PointIndices> cluster_indices)
+    extractClusters(pcl::PointCloud<pcl::PointXYZHSV>::Ptr cloud, std::vector<pcl::PointIndices::Ptr> cluster_indices)
     {
-        // Extract clusters
-        std::vector<pcl::PointCloud<pcl::PointXYZHSV>::Ptr> clusters;
-        for (std::vector<pcl::PointIndices>::const_iterator it = cluster_indices.begin (); it != cluster_indices.end (); ++it)
-        {
-            pcl::PointCloud<pcl::PointXYZHSV>::Ptr cloud_cluster (new pcl::PointCloud<pcl::PointXYZHSV>);
-            for (std::vector<int>::const_iterator pit = it->indices.begin (); pit != it->indices.end (); pit++)
-                cloud_cluster->points.push_back (cloud->points[*pit]); //
-            cloud_cluster->width = cloud_cluster->points.size ();
-            cloud_cluster->height = 1;
-            cloud_cluster->is_dense = false;
-            cloud_cluster->header = cloud->header;
+        // set up extractor
+        pcl::ExtractIndices<pcl::PointXYZHSV> extract;
+        extract.setInputCloud(cloud);
+        extract.setNegative(false);
 
-            clusters.push_back(cloud_cluster);
+        // set up cloud vector
+        std::vector<pcl::PointCloud<pcl::PointXYZHSV>::Ptr> clusters;
+        clusters.resize(cluster_indices.size());
+
+        // extract clusters
+        for(size_t i = 0; i < cluster_indices.size(); i++) {
+            pcl::PointCloud<pcl::PointXYZHSV>::Ptr cluster (new pcl::PointCloud<pcl::PointXYZHSV>);
+            extract.setIndices(cluster_indices[i]);
+            extract.filter(*cluster);
+            clusters[i] = cluster;
         }
+        // for(std::vector<pcl::PointIndices>::const_iterator it = cluster_indices.begin(); it != cluster_indices.end(); ++it)
+        // {
+        //     pcl::PointCloud<pcl::PointXYZHSV>::Ptr cloud_cluster (new pcl::PointCloud<pcl::PointXYZHSV>);
+        //     for (std::vector<int>::const_iterator pit = it->indices.begin (); pit != it->indices.end (); pit++)
+        //         cloud_cluster->points.push_back (cloud->points[*pit]); //
+        //     cloud_cluster->width = cloud_cluster->points.size ();
+        //     cloud_cluster->height = 1;
+        //     cloud_cluster->is_dense = false;
+        //     cloud_cluster->header = cloud->header;
+
+        //     clusters.push_back(cloud_cluster);
+        // }
 
         return clusters;
     }
 
     // from https://github.com/ros-interactive-manipulation/pr2_object_manipulation/blob/groovy-devel/perception/tabletop_object_detector/include/tabletop_object_detector/marker_generator.h
-    template <class PointCloudType>
+    template <class PointCloudTypePtr>
     visualization_msgs::Marker
-    static getCloudMarker(const PointCloudType& cloud, pcl::PointIndices indices)
+    static getCloudMarker(const PointCloudTypePtr& cloud)
     {
         static bool first_time = true;
         if(first_time) {
@@ -116,22 +140,29 @@ namespace cloud_helpers {
         marker.scale.y = 0.01;
         marker.scale.z = 1.0;
 
-        marker.color.r = ((double)rand())/RAND_MAX;
-        marker.color.g = ((double)rand())/RAND_MAX;
-        marker.color.b = ((double)rand())/RAND_MAX;
-        marker.color.a = 1.0;
-
-        for (std::vector<int>::const_iterator pit = indices.indices.begin(); pit != indices.indices.end(); pit++)
-        {
+        for(size_t i=0; i<cloud->points.size(); i++) {
             geometry_msgs::Point p;
-            p.x = cloud->points[*pit].x;
-            p.y = cloud->points[*pit].y;
-            p.z = cloud->points[*pit].z;
+            p.x = cloud->points[i].x;
+            p.y = cloud->points[i].y;
+            p.z = cloud->points[i].z;
             marker.points.push_back(p);
         }
 
         // the caller must decide the header; we are done here
         return marker;
+    }
+
+    std_msgs::ColorRGBA
+    static getRandomColor()
+    {
+        std_msgs::ColorRGBA color;
+
+        color.r = ((double)rand())/RAND_MAX;
+        color.g = ((double)rand())/RAND_MAX;
+        color.b = ((double)rand())/RAND_MAX;
+        color.a = 1.0;
+
+        return color;
     }
 
     // template <class PointCloudType>
