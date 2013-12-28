@@ -1,0 +1,27 @@
+#######################################
+# Syntax Coloring Map For Utils
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+Utils	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+cpuIdle	KEYWORD2
+freeCpu	KEYWORD2
+cpuUsage	KEYWORD2
+measureIdleUsage	KEYWORD2
+freeMem	KEYWORD2
+memUsage	KEYWORD2
+
+#######################################
+# Instances (KEYWORD2)
+#######################################
+
+#######################################
+# Constants (LITERAL1)
+#######################################
