@@ -1,5 +1,5 @@
-#include <Wire.h>
-#include <Adafruit_BMP085.h>
+#include <I2C.h>
+#include <I2c_BMP085.h>
 
 /*************************************************** 
   This is an example for the BMP085 Barometric Pressure & Temp Sensor
@@ -24,10 +24,14 @@
 // EOC is not used, it signifies an end of conversion
 // XCLR is a reset pin, also not used here
 
-Adafruit_BMP085 bmp;
+I2c_BMP085 bmp;
   
 void setup() {
-  Serial.begin(9600);
+  I2c.begin();
+  I2c.timeOut(10);
+
+  Serial.begin(57600);
+  Serial.println("Searching for BMP085 sensor...");
   if (!bmp.begin()) {
 	Serial.println("Could not find a valid BMP085 sensor, check wiring!");
 	while (1) {}

@@ -15,8 +15,8 @@
   BSD license, all text above must be included in any redistribution
  ****************************************************/
 
-#ifndef ADAFRUIT_BMP085_H
-#define ADAFRUIT_BMP085_H
+#ifndef I2c_BMP085_H
+#define I2c_BMP085_H
 
 #if (ARDUINO >= 100)
  #include "Arduino.h"
@@ -53,9 +53,9 @@
 #define BMP085_READPRESSURECMD            0x34
 
 
-class Adafruit_BMP085 {
+class I2c_BMP085 {
  public:
-  Adafruit_BMP085();
+  I2c_BMP085();
   boolean begin(uint8_t mode = BMP085_ULTRAHIGHRES);  // by default go highres
   float readTemperature(void);
   int32_t readPressure(void);
@@ -75,4 +75,4 @@ class Adafruit_BMP085 {
 };
 
 
-#endif //  ADAFRUIT_BMP085_H
+#endif //  I2c_BMP085_H

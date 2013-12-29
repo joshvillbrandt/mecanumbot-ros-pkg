@@ -7,13 +7,13 @@
 #include "Arduino.h"
 
 // Health
-#include "../I2C/I2C.h"
-#include <Adafruit_BMP085.h>
+#include <I2C.h>
+#include <I2c_BMP085.h>
 #include <Utils.h>
 const byte PWR_ADDRESS = 42;
+#define PRESSURE_SL 101500 // Pa (=1015mb http://w1.weather.gov/obhistory/KLAX.html)
 
 // Mecanum
-#include <I2C.h>
 #include <MD25.h>
 #include <Mecanum.h>
 #define COUNTS_TO_METERS (0.6283185 / 360.0)
@@ -65,7 +65,7 @@ unsigned long watchdog_timer = 0;
 byte lights = 4; // bitmask LSB:[internal, front, hazards, top in, top out, blank, blank, blank]
 byte flash_mode = 1;
 LPD8806 strip = LPD8806(NUM_LEDS, LED_DATA_PIN, LED_CLOCK_PIN);
-Adafruit_BMP085 bmp;
+I2c_BMP085 bmp;
 
 // convert to motor
 // TODO: move this into the Mecanum library
@@ -146,10 +146,6 @@ void setup()
   I2c.timeOut(5); // ms
   // the lower the timeout, the less CPU we waste when the e-stop is enabled
   
-  // Start BMP sensor
-  if (!bmp.begin())
-    nh.logerror("Could not find a valid BMP085 sensor, check wiring!");
-  
   // Start up the LED strip, turn them all off
   strip.begin();
   strip.show();
@@ -169,15 +165,15 @@ void setup()
   odom_timer = millis();
   enc_msg.data = (float *)malloc(sizeof(float)*4);
   enc_msg.data_length = 4;
-
-  // Get baseline cpu usage
   
-  // default color state w/ ROS connected
+  // Start BMP sensor
+  if (!bmp.begin())
+    nh.logerror("Could not find a valid BMP085 sensor, check wiring!");
+  
+  // ready to go! default color state w/ ROS connected
+  nh.loginfo("MecanumController startup complete");
   setPixle(2, COLOR_WHITE);
   setPixle(7, COLOR_WHITE);
-
-  // ready to go!
-  nh.loginfo("MecanumController startup complete");
 }
 
 void loop()
@@ -229,7 +225,7 @@ void loop()
     // temperature and pressure
     health_msg.t_internal = bmp.readTemperature();
     health_msg.p_internal = bmp.readPressure();
-    health_msg.altitude = bmp.readAltitude();
+    health_msg.altitude = bmp.readAltitude(PRESSURE_SL);
     
     // publish
     health_pub.publish(&health_msg);
@@ -243,4 +239,3 @@ void loop()
   // keep track of an idle CPU
   utils.cpuIdle(); // sleeps 1ms
 }
-
