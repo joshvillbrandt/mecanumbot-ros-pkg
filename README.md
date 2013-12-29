@@ -165,6 +165,10 @@ More information [here](http://arduino.cc/forum/index.php?topic=104492.15 and ht
 
 This package uses [semantic versioning](http://semver.org/).
 
+### [v0.3.0](https://github.com/joshvillbrandt/mecanumbot/releases/tag/v0.3.0)
+
+Ball tracking code refactored to HSV. Added power board telemetry.
+
 ### [v0.2.0](https://github.com/joshvillbrandt/mecanumbot/releases/tag/v0.2.0)
 
 Updating for Hydro. New ball tracking with target follower.
