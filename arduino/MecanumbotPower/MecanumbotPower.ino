@@ -1,11 +1,13 @@
 /*
-  MecanumPower.ino - Controls power input for the Mecanumbot.
-  Created by Josh Villbrandt (http://javconcepts.com/), 10/12-1/13.
+  MecanumbotPower.ino - Controls power input for the Mecanumbot.
+  Created by Josh Villbrandt (http://javconcepts.com/).
+  Created in October 2012. Last updated December 2013.
   Released into the public domain.
 */
 
 // Set up I2C
-//#include <Wire.h>
+#include <Wire.h>
+#include "I2C_Anything.h"
 
 #define DEBUG false
 #define PC_STARTUP true
@@ -14,9 +16,10 @@
 #define ADC_V_MULT ((REF_5V / ADC_COUNTS) / 0.24) // counts to V
 #define ADC_I_MULT ((REF_5V / ADC_COUNTS) * (1000.0 / (0.002 * 82500))) // counts to A
 #define MIN_VOLT 10.5 // V
-#define TURN_OFF_DEBOUNCE 1500 // ms
+#define TURN_OFF_DEBOUNCE 1000 // ms
 #define LED_RATE 100 // ms
 #define LED_DUTY 65 // ms
+const byte MY_ADDRESS = 42;
 
 // Define I/O pins
 #define EXT_SW 4
@@ -41,6 +44,10 @@ boolean stayPowered = true;
 
 void setup() {
   if(DEBUG) Serial.begin(57600);
+  
+  // Start I2C
+  Wire.begin(MY_ADDRESS);
+  Wire.onRequest(telemetryCallback);
   
   // set external interface pins
   pinMode(EXT_SW, INPUT);
@@ -117,33 +124,30 @@ void loop() {
   if(pwrswState && (millis() - pwrswDebounceTime) > TURN_OFF_DEBOUNCE) stayPowered = false;
   lastPwrswState = pwrswState;
   
-  // send telemetry over i2c
-  // TODO
-  
   // Debug
   if(DEBUG) {
     loopEnd = micros() - loopStart;
     
     Serial.println("MecanumPower Debug");
     
-    Serial.print("e_batt1: \t");
-    Serial.print(voltageReadings[1]);
-    Serial.println(" V");
-    
     Serial.print("e_wall:  \t");
     Serial.print(voltageReadings[0]);
+    Serial.println(" V");
+    
+    Serial.print("e_batt1: \t");
+    Serial.print(voltageReadings[1]);
     Serial.println(" V");
     
     Serial.print("e_batt2: \t");
     Serial.print(voltageReadings[2]);
     Serial.println(" V");
     
-    Serial.print("e_vin:   \t");
+    Serial.print("e_bus:   \t");
     Serial.print(voltageReadings[3]);
     Serial.println(" V");
     
-    Serial.print("i_vin:   \t");
-    Serial.print(currentReadings[0]);
+    Serial.print("i_bus:   \t");
+    Serial.print(currentReadings[0], 4);
     Serial.println(" A");
     
     Serial.print("pwr_sw:  \t");
@@ -159,4 +163,29 @@ void loop() {
     delay(500);
     Serial.println();
   }
+}
+
+void telemetryCallback()
+{
+  // build power bit (wall_avail, batt1_avail, batt2_avail, wall_active, batt1_active, batt2_active, power_switch, external_switch)
+  byte pwr_bit;
+  bitWrite(pwr_bit, 7, availableSource[0]);
+  bitWrite(pwr_bit, 6, availableSource[1]);
+  bitWrite(pwr_bit, 5, availableSource[2]);
+  bitWrite(pwr_bit, 4, activeSource[0]);
+  bitWrite(pwr_bit, 3, activeSource[1]);
+  bitWrite(pwr_bit, 2, activeSource[2]);
+  bitWrite(pwr_bit, 1, pwrswState);
+  bitWrite(pwr_bit, 0, digitalRead(EXT_SW));
+
+  byte buffer[21];
+  unsigned int buffer_position;
+  buffer_position = addToBuffer(buffer, buffer_position, voltageReadings[0]); // e_wall
+  buffer_position = addToBuffer(buffer, buffer_position, voltageReadings[1]); // e_batt1
+  buffer_position = addToBuffer(buffer, buffer_position, voltageReadings[2]); // e_batt2
+  buffer_position = addToBuffer(buffer, buffer_position, voltageReadings[3]); // e_bus
+  buffer_position = addToBuffer(buffer, buffer_position, currentReadings[0]); // i_bus
+  buffer_position = addToBuffer(buffer, buffer_position, pwr_bit);
+  
+  Wire.write(buffer, 21);
 }
