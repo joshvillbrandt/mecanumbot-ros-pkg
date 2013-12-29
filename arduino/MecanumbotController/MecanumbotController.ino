@@ -11,7 +11,7 @@
 #include <I2c_BMP085.h>
 #include <Utils.h>
 const byte PWR_ADDRESS = 42;
-#define PRESSURE_SL 101500 // Pa (=1015mb http://w1.weather.gov/obhistory/KLAX.html)
+#define PRESSURE_SL 101600 // Pa (=1016mb http://w1.weather.gov/obhistory/KLAX.html)
 
 // Mecanum
 #include <MD25.h>
