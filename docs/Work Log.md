@@ -54,10 +54,11 @@ Still seeing a bit of wiggle when rotating the robot. This seems to indicate som
 ## 31 October 2012, Josh Villbrandt
 * Velocity Calibration was preformed. Video of the Mecanumbot moving was taken with an iPhone 5 and analyzed with Avidemux.
 
-|movement|t1|t2|dt|d/dt|units|d/dt|units|
-|turning 1 rotation|1.900|4.100|2.200|2.856|rad/s|||
-|forward 4 ft|1.233|2.633|1.400|0.350|ft/s|1.148|m/s|
-|sideways 4 ft|1.666|3.266|1.600|0.400|ft/s|1.312|m/s|
+| movement | t1 | t2 | dt | d/dt | units | d/dt | units |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| turning 1 rotation | 1.900 | 4.100 | 2.200 | 2.856 | rad/s |  |  |
+| forward 4 ft | 1.233 | 2.633 | 1.400 | 0.350 | ft/s | 1.148 | m/s |
+| sideways 4 ft | 1.666 | 3.266 | 1.600 | 0.400 | ft/s | 1.312 | m/s |
 
 ## 30 October 2012, Josh Villbrandt
 * created launch file for gmapping, testing running gmapping - everything works!!
