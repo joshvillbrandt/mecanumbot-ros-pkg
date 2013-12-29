@@ -96,7 +96,8 @@ void loop() {
     else digitalWrite(fetPins[i], LOW);
     
     // set LED
-    if(activeSource[i] && (stayPowered || pwrswState)) {
+    if(!stayPowered) analogWrite(ledPins[i], 0); // so we know the switch is listening
+    else if(activeSource[i] && (stayPowered || pwrswState)) {
       // fancy active indication
       if(millis() % LED_RATE < LED_DUTY) analogWrite(ledPins[i], 255);
       else analogWrite(ledPins[i], 0);
@@ -116,7 +117,8 @@ void loop() {
   if(pwrswState && (millis() - pwrswDebounceTime) > TURN_OFF_DEBOUNCE) stayPowered = false;
   lastPwrswState = pwrswState;
   
-  // TODO: send I2C message to master if asked for
+  // send telemetry over i2c
+  // TODO
   
   // Debug
   if(DEBUG) {
