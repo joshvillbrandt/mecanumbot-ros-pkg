@@ -5,13 +5,13 @@ A ROS package for the Mecanumbot robot.
 
 ## Summary
 
-The Mecanumbot robot is a robotic development platform designed, built, and maintained by [Josh Villbrandt](josh@javconcepts.com). It features a holonomic drive platform with mecanum wheels as well as a 2D laser scanner and an RGB-D camera. Research goals in localization, navigation, and object recognition from point clouds. Learn more about the Mecanumbot at [JAV Concepts](http://javconcepts.com/tag/mecanumbot/).
+The Mecanumbot robot is a robotic development platform designed, built, and maintained by [Josh Villbrandt](mailto:josh@javconcepts.com). It features a holonomic drive platform with mecanum wheels as well as a 2D laser scanner and an RGB-D camera. Research goals in localization, navigation, and object recognition from point clouds. Learn more about the Mecanumbot at [JAV Concepts](http://javconcepts.com/tag/mecanumbot/).
 
 ![Mecanumbot](extra/mecanumbot.jpg)
 
-## Docs
+## Documentation
 
-A variety of guides are available in the `docs` folder.
+A variety of guides are available in the `docs/` folder.
 
 * [Setup Guide](docs/Setup Guide.md)
 * [Usage Guide](docs/Usage Guide.md)
