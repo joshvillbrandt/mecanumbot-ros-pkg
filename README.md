@@ -3,7 +3,7 @@ mecanumbot-ros-pkg
 
 A ROS package for the Mecanumbot robot.
 
-The Mecanumbot robot is a robotic development platform designed and built by Josh Villbrandt. It features a holonomic drive platform with mecanum wheels as well as a 2D laser scanner and an RGB-D camera. Research goals in localization, navigation, and point cloud manipulation. Learn more about the Mecanumbot at [JAV Concepts](http://javconcepts.com/tag/mecanumbot/).
+The Mecanumbot robot is a robotic development platform designed and built by Josh Villbrandt. It features a holonomic drive platform with mecanum wheels as well as a 2D laser scanner and an RGB-D camera. Research goals in localization, navigation, and object recognition from point clouds. Learn more about the Mecanumbot at [JAV Concepts](http://javconcepts.com/tag/mecanumbot/).
 
 * [Setup](#setup)
 * [Usage](#usage)
@@ -165,17 +165,14 @@ More information [here](http://arduino.cc/forum/index.php?topic=104492.15 and ht
 
 This package uses [semantic versioning](http://semver.org/).
 
-### [v0.3.0](https://github.com/joshvillbrandt/mecanumbot/releases/tag/v0.3.0)
-
-Ball tracking code refactored to HSV. Added power board telemetry.
-
-### [v0.2.0](https://github.com/joshvillbrandt/mecanumbot/releases/tag/v0.2.0)
-
-Updating for Hydro. New ball tracking with target follower.
-
-### [v0.1.0](https://github.com/joshvillbrandt/mecanumbot/releases/tag/v0.1.0)
-
-Last working version of the mecanumbot package for ROS Groovy.
+| Version | Notes |
+| --- | --- |
+| future | Re-added gmapping launch file. |
+| future | Target follower now uses dynamic_reconfigure. Fixed phantom LED and motor message. |
+| future | Refactoring LED messages and xbox controller mapping for LEDs. Added barometer telemetry. |
+| [v0.3.0](https://github.com/joshvillbrandt/mecanumbot/releases/tag/v0.3.0) | Ball tracking code refactored to HSV. Added power board telemetry. |
+| [v0.2.0](https://github.com/joshvillbrandt/mecanumbot/releases/tag/v0.2.0) | Updating for Hydro. New ball tracking with target follower. |
+| [v0.1.0](https://github.com/joshvillbrandt/mecanumbot/releases/tag/v0.1.0) | Last working version of the mecanumbot package for ROS Groovy. |
 
 ## Todo List
 
