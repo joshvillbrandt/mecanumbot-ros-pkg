@@ -12,6 +12,14 @@
 
 #include "Utils.h"
 
+#if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
+#define SRAM_SIZE 8192
+#elif defined(__AVR_ATmega328P__)
+#define SRAM_SIZE 2048
+#else
+#define SRAM_SIZE 1024
+#endif
+
 
 /*
 * Constructors
@@ -21,6 +29,7 @@
 Utils::Utils()
 {
     this->counter = 0;
+    this->idle_counter = 0;
 }
 
 
@@ -31,6 +40,7 @@ Utils::Utils()
 void Utils::cpuIdle()
 {
     this->counter++;
+    delay(1);
 }
 
 unsigned long Utils::freeCpu()
@@ -40,29 +50,30 @@ unsigned long Utils::freeCpu()
     return temp;
 }
 
-byte Utils::cpuUsage(unsigned long idle_cpu)
+float Utils::cpuUsage(unsigned int period)
 {
-    return (idle_cpu - this->freeCpu())*100/idle_cpu;
+    // is ticket of counter is 1ms so counter is the total free time we had during period
+    return (float)(period - this->freeCpu()) / (float)period;
 }
 
 unsigned long Utils::measureIdleUsage(unsigned int period)
 {
-    unsigned long idleCounter = 0;
-    unsigned long idleTimer = millis() + period;
-    while(millis() < idleTimer)
+    this->idle_counter = 0;
+    unsigned long idle_timer = millis() + period;
+    while(millis() < idle_timer)
     {
-        idleCounter++;
+        this->idle_counter++;
     }
-    return idleCounter;
+    return this->idle_counter;
 }
 
 int Utils::freeMem() {
-  extern int __heap_start, *__brkval; 
-  int v; 
-  return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval); 
+    extern int __heap_start, *__brkval; 
+    int v; 
+    return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval); 
 }
 
-byte Utils::memUsage(int total_mem)
+float Utils::memUsage()
 {
-    return (total_mem - this->freeMem())/(total_mem/100);
+    return (float)(SRAM_SIZE - this->freeMem()) / (float)SRAM_SIZE;
 }

@@ -15,17 +15,18 @@
 
 class Utils
 {
-  public:
-    Utils();
-    void cpuIdle();
-    unsigned long freeCpu();
-    byte cpuUsage(unsigned long idle_cpu);
-    static unsigned long measureIdleUsage(unsigned int period);
-    static int freeMem();
-    byte memUsage(int total_mem);
+    public:
+        Utils();
+        void cpuIdle();
+        unsigned long freeCpu();
+        float cpuUsage(unsigned int period);
+        unsigned long measureIdleUsage(unsigned int period);
+        static int freeMem();
+        float memUsage();
 
-  private:
-    unsigned long counter; // this number is usually smaller than 500k for a 16MHz Arduino
+    private:
+        unsigned long counter; // this number is usually smaller than 500k for a 16MHz Arduino
+        unsigned long idle_counter;
 };
 
 #endif

@@ -1,10 +1,17 @@
-uint16 cpu # loops per second
-uint16 mem # free bytes
-uint8 pwr_bit # wall avail, batt1 avail, batt2 avail, wall active, batt1 active, batt2 active, power switch, external switch
+float32 cpu_used # percent cpu utilization
+float32 mem_used # percent memory used
 float32 e_wall # volts
 float32 e_batt1 # volts
 float32 e_batt2 # volts
 float32 e_bus # volts
 float32 i_bus # amps
-float32 t_body # *C
-float32 p_body # Pa
+float32 t_internal # *C
+float32 p_internal # Pa
+bool wall_avail
+bool batt1_avail
+bool batt2_avail
+bool wall_active
+bool batt1_active
+bool batt2_active
+bool power_switch
+bool external_switch

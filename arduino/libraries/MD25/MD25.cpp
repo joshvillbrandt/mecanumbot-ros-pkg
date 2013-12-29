@@ -29,7 +29,7 @@ MD25::MD25(byte i2cAddress)
      this->i2cAddress = i2cAddress;
      
      I2c.begin();
-     I2c.timeOut(10); // ms
+     I2c.timeOut(5); // ms
 }
 
 

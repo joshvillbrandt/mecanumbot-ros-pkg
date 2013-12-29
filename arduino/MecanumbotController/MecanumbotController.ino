@@ -132,9 +132,13 @@ float readFloat() {
 
 void setup()
 {
-  // Health
+  // Get baseline CPI utilization
+  utils.measureIdleUsage(HEALTH_PERIOD);
+
+  // Start I2C
   I2c.begin();
-  I2c.timeOut(10); // ms
+  I2c.timeOut(5); // ms
+  // the lower the timeout, the less CPU we waste when the e-stop is enabled
   
   // Start up the LED strip, turn them all off
   strip.begin();
@@ -152,14 +156,18 @@ void setup()
   nh.subscribe(vel_sub);
   nh.subscribe(light_sub);
   while(!nh.connected()) nh.spinOnce();
-  nh.loginfo("MecanumController startup complete");
   odom_timer = millis();
   enc_msg.data = (float *)malloc(sizeof(float)*4);
   enc_msg.data_length = 4;
+
+  // Get baseline cpu usage
   
   // default color state w/ ROS connected
   setPixle(2, COLOR_WHITE);
   setPixle(7, COLOR_WHITE);
+
+  // ready to go!
+  nh.loginfo("MecanumController startup complete");
 }
 
 void loop()
@@ -187,17 +195,17 @@ void loop()
   // health timer
   if((millis() - health_timer) > HEALTH_PERIOD) {
     // microcontroller health
-    health_msg.cpu = utils.freeCpu(); // free loops per HEALTH_PERIOD
-    health_msg.mem = Utils::freeMem(); // bytes
+    health_msg.cpu_used = utils.cpuUsage(HEALTH_PERIOD); // percentage
+    health_msg.mem_used = utils.memUsage(); // percentage
     
     // power board health
-    I2c.read((byte)POWER_ADDRESS, (byte)21);
-    health_msg.pwr_bit = I2c.receive();
-    health_msg.e_wall = readFloat();
-    health_msg.e_batt1 = readFloat();
-    health_msg.e_batt2 = readFloat();
-    health_msg.e_bus = readFloat();
-    health_msg.i_bus = readFloat();
+    //I2c.read((byte)POWER_ADDRESS, (byte)21);
+    // health_msg.pwr_bit = I2c.receive();
+    // health_msg.e_wall = readFloat();
+    // health_msg.e_batt1 = readFloat();
+    // health_msg.e_batt2 = readFloat();
+    // health_msg.e_bus = readFloat();
+    // health_msg.i_bus = readFloat();
     
     // temperature and pressure
     //todo
@@ -209,10 +217,10 @@ void loop()
   
   // send / receive ROS messages
   nh.spinOnce();
-  delay(1);
+  // ros likes us to wait at least 1ms between loops - this is accounted for in utils.cpuIdle() below
   
   // keep track of an idle CPU
-  utils.cpuIdle();
+  utils.cpuIdle(); // sleeps 1ms
 }
 
 //char log_msg[10];
