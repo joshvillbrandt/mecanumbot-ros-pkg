@@ -7,6 +7,7 @@ float32 e_bus # volts
 float32 i_bus # amps
 float32 t_internal # *C
 float32 p_internal # Pa
+float32 altitude # m
 bool wall_avail
 bool batt1_avail
 bool batt2_avail

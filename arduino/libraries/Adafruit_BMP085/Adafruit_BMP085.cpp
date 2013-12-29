@@ -27,7 +27,7 @@ boolean Adafruit_BMP085::begin(uint8_t mode) {
     mode = BMP085_ULTRAHIGHRES;
   oversampling = mode;
 
-  Wire.begin();
+  I2c.begin();
 
   if (read8(0xD0) != 0x55) return false;
 
@@ -230,63 +230,19 @@ float Adafruit_BMP085::readAltitude(float sealevelPressure) {
 /*********************************************************************/
 
 uint8_t Adafruit_BMP085::read8(uint8_t a) {
-  uint8_t ret;
-
-  Wire.beginTransmission(BMP085_I2CADDR); // start transmission to device 
-#if (ARDUINO >= 100)
-  Wire.write(a); // sends register address to read from
-#else
-  Wire.send(a); // sends register address to read from
-#endif
-  Wire.endTransmission(); // end transmission
-  
-  Wire.beginTransmission(BMP085_I2CADDR); // start transmission to device 
-  Wire.requestFrom(BMP085_I2CADDR, 1);// send data n-bytes read
-#if (ARDUINO >= 100)
-  ret = Wire.read(); // receive DATA
-#else
-  ret = Wire.receive(); // receive DATA
-#endif
-  Wire.endTransmission(); // end transmission
-
+  I2c.read((uint8_t)BMP085_I2CADDR, a, (uint8_t)1);
+  uint8_t ret = I2c.receive();
   return ret;
 }
 
 uint16_t Adafruit_BMP085::read16(uint8_t a) {
+  I2c.read((uint8_t)BMP085_I2CADDR, a, (uint8_t)2);
   uint16_t ret;
-
-  Wire.beginTransmission(BMP085_I2CADDR); // start transmission to device 
-#if (ARDUINO >= 100)
-  Wire.write(a); // sends register address to read from
-#else
-  Wire.send(a); // sends register address to read from
-#endif
-  Wire.endTransmission(); // end transmission
-  
-  Wire.beginTransmission(BMP085_I2CADDR); // start transmission to device 
-  Wire.requestFrom(BMP085_I2CADDR, 2);// send data n-bytes read
-#if (ARDUINO >= 100)
-  ret = Wire.read(); // receive DATA
-  ret <<= 8;
-  ret |= Wire.read(); // receive DATA
-#else
-  ret = Wire.receive(); // receive DATA
-  ret <<= 8;
-  ret |= Wire.receive(); // receive DATA
-#endif
-  Wire.endTransmission(); // end transmission
-
+  ret = I2c.receive() << 8;
+  ret |= I2c.receive();
   return ret;
 }
 
 void Adafruit_BMP085::write8(uint8_t a, uint8_t d) {
-  Wire.beginTransmission(BMP085_I2CADDR); // start transmission to device 
-#if (ARDUINO >= 100)
-  Wire.write(a); // sends register address to read from
-  Wire.write(d);  // write data
-#else
-  Wire.send(a); // sends register address to read from
-  Wire.send(d);  // write data
-#endif
-  Wire.endTransmission(); // end transmission
+  I2c.write(BMP085_I2CADDR, a, &d, 1);
 }
