@@ -131,11 +131,10 @@ Rules are automatically ran at startup. To automatically reload the rules withou
 
 The following steps will allow you to update the onboard Arduino.
 
-    mkdir ~/sketchbook
-    cd ~/sketchbook
-    git clone https://github.com/joshvillbrandt/MecanumbotController
+    mv ~/sketchbook ~/sketchbook_old
+    ln -s ~/catkin_ws/src/mecanumbot/arduino ~/sketchbook
     cd ~/sketchbook/libraries
-    rm -rf ros_lib
+    rm -rf ros_lib # just in case
     rosrun rosserial_arduino make_libraries.py .
     sudo apt-get install arduino arduino-core 
 

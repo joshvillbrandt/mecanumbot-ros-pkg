@@ -8,8 +8,9 @@
 
 // Health
 #include "../I2C/I2C.h"
+#include <Adafruit_BMP085.h>
 #include <Utils.h>
-#define POWER_ADDRESS 5
+const byte PWR_ADDRESS = 42;
 
 // Mecanum
 #include <I2C.h>
@@ -64,6 +65,7 @@ unsigned long watchdog_timer = 0;
 byte lights = 4; // bitmask LSB:[internal, front, hazards, top in, top out, blank, blank, blank]
 byte flash_mode = 1;
 LPD8806 strip = LPD8806(NUM_LEDS, LED_DATA_PIN, LED_CLOCK_PIN);
+Adafruit_BMP085 bmp;
 
 // convert to motor
 // TODO: move this into the Mecanum library
@@ -126,8 +128,12 @@ void setPixle(byte i, uint32_t c) {
 }
 
 float readFloat() {
-  float f = I2c.receive() << 24 | I2c.receive() << 16 | I2c.receive() << 8 | I2c.receive();
-  return f;
+  float value;
+  byte* p = (byte*)(void*)&value;
+  for (unsigned int i = 0; i < sizeof value; i++) {
+    *p++ = I2c.receive();
+  }
+  return value;
 }
 
 void setup()
@@ -139,6 +145,10 @@ void setup()
   I2c.begin();
   I2c.timeOut(5); // ms
   // the lower the timeout, the less CPU we waste when the e-stop is enabled
+  
+  // Start BMP sensor
+  if (!bmp.begin())
+    nh.logerror("Could not find a valid BMP085 sensor, check wiring!");
   
   // Start up the LED strip, turn them all off
   strip.begin();
@@ -199,16 +209,27 @@ void loop()
     health_msg.mem_used = utils.memUsage(); // percentage
     
     // power board health
-    //I2c.read((byte)POWER_ADDRESS, (byte)21);
-    // health_msg.pwr_bit = I2c.receive();
-    // health_msg.e_wall = readFloat();
-    // health_msg.e_batt1 = readFloat();
-    // health_msg.e_batt2 = readFloat();
-    // health_msg.e_bus = readFloat();
-    // health_msg.i_bus = readFloat();
+    I2c.read((uint8_t)PWR_ADDRESS, (uint8_t)21);
+    int avail = I2c.available();
+    health_msg.e_wall = readFloat();
+    health_msg.e_batt1 = readFloat();
+    health_msg.e_batt2 = readFloat();
+    health_msg.e_bus = readFloat();
+    health_msg.i_bus = readFloat();
+    byte pwr_bit = I2c.receive();
+    health_msg.wall_avail = bitRead(pwr_bit, 7);
+    health_msg.batt1_avail = bitRead(pwr_bit, 6);
+    health_msg.batt2_avail = bitRead(pwr_bit, 5);
+    health_msg.wall_active = bitRead(pwr_bit, 4);
+    health_msg.batt1_active = bitRead(pwr_bit, 3);
+    health_msg.batt2_active = bitRead(pwr_bit, 2);
+    health_msg.power_switch = bitRead(pwr_bit, 1);
+    health_msg.external_switch = bitRead(pwr_bit, 0);
     
     // temperature and pressure
-    //todo
+    health_msg.t_internal = bmp.readTemperature();
+    health_msg.p_internal = bmp.readPressure();
+    health_msg.altitude = bmp.readAltitude();
     
     // publish
     health_pub.publish(&health_msg);
@@ -223,6 +244,3 @@ void loop()
   utils.cpuIdle(); // sleeps 1ms
 }
 
-//char log_msg[10];
-//sprintf(log_msg, "ram: %d", memoryTest());
-//nh.loginfo(log_msg);
