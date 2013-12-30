@@ -5,6 +5,33 @@ Entries listed from newest to oldest.
 
 ## 29 December 2013, Josh Villbrandt
 * added barometer telemetry in robot_health
+* refactored documentation
+* evaluated I2C bus pull up resistors
+ * http://www.dsscircuits.com/articles/effects-of-varying-i2c-pull-up-resistors.html
+ * R_pull_up_min = (Vcc - 0.4V)/3mA
+  * this is a 1.5k resistor for 5V logic
+ * R_pull_up_max = 1us / C_b (C_b = bus capacitance)
+  * C_arduino is 10pF from the datasheet, so I'm assuming C_b is 50 pF since I also have four slaves
+  * this equates to a 20k max pull up resistor
+* also a good read: http://www.robot-electronics.co.uk/acatalog/I2C_Tutorial.html
+* the Mecanumbot currently uses a 10k resistor each on the clock and data lines
+* hooked up an oscope to the i2c bus and saw:
+ * 100 kHz on average - spot on
+ * 640mV peal to peak - this should be 5V
+ * squareness of signal was pretty round for most of cycle - bad but not terrible
+  * this matches the 10k resistor in the dsscircuits testing
+  * would like to try 2.2k resistors instead
+ * i2c bus falls flat when motor e-stop is enable meaning there is no comm even for to the barometer and the power board
+  * i already knew this and can live with this...
+ * slight dip in the clock line during the start signal... maybe the phantom wheel spins are coming from this dipping
+ * changed resistance to 1.8k, 2.2k, and 2.8k and that had no affect (still wheel movements)
+* other I2C experiments
+ * removed power board and barometer from the bus - no affect (wheels still have occasional momentary jerk)
+ * removing either SDA of SCL line from the primary microcontroller (the i2c master) stops all ghost wheel movements (but obviously stops all legitimate comm too)
+  * tried hooking primary uC up via different wires to the other MD25 - no affect
+  * maybe slave address colisions? 58, 59, 42, and 119
+  * maybe try a different arduino? (need another arduino mega...)
+  * maybe an interupt problem? maybe ROS vs I2C library?
 
 ## 28 December 2013, Josh Villbrandt
 * finally routed board power telemetry through the primary arduino and then to ROS
