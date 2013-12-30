@@ -3,6 +3,25 @@ Mecanumbot Work Log
 
 Entries listed from newest to oldest.
 
+## 29 December 2013, Josh Villbrandt
+* added barometer telemetry in robot_health
+
+## 28 December 2013, Josh Villbrandt
+* finally routed board power telemetry through the primary arduino and then to ROS
+
+## 24 December 2013, Josh Villbrandt
+* ball tracker now uses HSV space for color filtering
+
+## 15 December 2013, Josh Villbrandt
+* created a tf average frame
+
+## 8 December 2013, Josh Villbrandt
+* migrated ball tracker to hydro
+
+## 30 November 2013, Josh Villbrandt
+* migrating repository to hydro
+* teleop_xbox works in hydro
+
 ## 18 March 2013, Josh Villbrandt
 * starting move to ROS Groovy / catkin build system
 * starting move to github over svn.javconcepts.com for ROS and Arduino code
