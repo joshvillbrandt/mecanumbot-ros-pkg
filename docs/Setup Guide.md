@@ -75,6 +75,10 @@ After the initial install or after making any code changes, the mecanumbot packa
 
 These setup steps aren't always necessary.
 
+### Enable SSD TRIM
+
+Ubuntu < 14.04 has TRIM disabled by default. Checkout [this link](http://askubuntu.com/questions/18903/how-to-enable-trim/19480#19480) for instructions on how to enable it yourself.
+
 ### New udev Rules
 
 Check out [this syntax guide](http://www.reactivated.net/writing_udev_rules.html#syntax) for creating new udev rules. To identify properties of currently plugged in devices, try a command like this:
