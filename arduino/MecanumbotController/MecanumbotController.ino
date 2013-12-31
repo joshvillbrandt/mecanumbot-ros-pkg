@@ -72,7 +72,7 @@ I2c_BMP085 bmp;
 #define LINEAR_X_MAX_VEL 1.1 // m/s
 #define LINEAR_Y_MAX_VEL 1.3 // m/s
 #define ANGULAR_Z_MAX_VEL 2.8 // rad/s
-#define DEADZONE 13 // in bytes around 128
+#define DEADZONE 5 // in bytes around 128
 byte convertToMotor(float value, float maxValue) {
   value = constrain(value, -1.0 * maxValue, maxValue);
   byte r = map(value*256.0, -1.0 * maxValue * 256.0, maxValue * 256.0, 0.0, 256.0);
