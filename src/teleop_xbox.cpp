@@ -97,7 +97,7 @@ void TeleopXbox::spin()
         }
         
         // call all waiting callbacks
-        ros::Duration(0.1).sleep();
+        ros::Duration(0.05).sleep(); // this sets a crude max rate of 20Hz
         ros::spinOnce();
     }
 }
