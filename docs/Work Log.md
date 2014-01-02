@@ -3,6 +3,15 @@ Mecanumbot Work Log
 
 Entries listed from newest to oldest.
 
+## 1 January 2014, Josh Villbrandt
+* phatom wheel spins still happening
+ * noted that phantom wheel spins always seem to be full speed
+ * having a faster cmd_vel publish rate mitigates the affect, because the full-speed command is quickly overwritten by the legitimate command
+ * this maybe be related to why the wheels spin on power up some time.
+* still also have phantom LED flashes, although way less frequently
+ * this doesn't have anything to do with I2C, but is commanded by the same Arduino that sends the motor commands
+ * maybe a memory problem on the Arduino? But this doesn't seem like it is the case...
+
 ## 29 December 2013, Josh Villbrandt
 * added barometer telemetry in robot_health
 * refactored documentation

@@ -10,11 +10,9 @@ Mecanumbot Todo List
 * BUG: occasional "hick-ups" in motor controller - wheels spin for a moment without command
  * suspect this is bad resistors on the I2C bus, check with oscope
 * BUG: laser data goes totally wack every few seconds... this is something with the new hydro driver
-* BUG: kinect udev rule doesn't work on jvillbrandt-bedroom
+* BUG: xbox controller udev rule doesn't always work
 * FEATURE: move installation dependencies to the package.xml file and provide a method to auto-install
-* FEATURE: auto-start ros with 
-* FEATURE: pipe Mecanumbot-power system telemetry through to ROS (input voltages, bus voltage, bus current, button states, etc)
-* FEATURE: make Mecanumbot-power powering off by holding the button more apparent by shutting down before button release
+* FEATURE: start ros on system startup
 
 ## Robot LEDs
 * BUG: occasional random `light_control` messages, or so it seems anyway
