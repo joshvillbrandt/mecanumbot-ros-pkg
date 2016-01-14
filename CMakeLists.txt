@@ -8,6 +8,7 @@ find_package(catkin REQUIRED COMPONENTS std_msgs nav_msgs geometry_msgs sensor_m
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
+find_package(cmake_modules REQUIRED)
 find_package(Eigen REQUIRED)
 include_directories(${Eigen_INCLUDE_DIRS})
 

@@ -1,83 +1,133 @@
-Mecanumbot Setup Guide
-======================
+# Mecanumbot Setup Guide
 
 Complete the following steps to install the mecanumbot package on a new robot. If you are not familiar with ROS, please complete the [ROS Tutorials](http://wiki.ros.org/ROS/Tutorials) before continuing.
 
-## Install Ubuntu 12.04
+## Install Ubuntu 14.04
 
-Use your favorite method to install a fresh copy of Ubuntu Precise. After the install, you'll want to update the OS and install some additional packages.
+Use your favorite method to install a fresh copy of Ubuntu Trusty. Pay special note to the hostname you choose during installation - this will be the hostname of your robot.
 
-    sudo apt-get update
-    sudo apt-get upgrade
-    sudo apt-get install git-core gnome-session-fallback compizconfig-settings-manager
+After installtion completes, install these additional, required packages:
 
-You'll also want to give your robot a custom hostname so that you can easily find it on the network. Modify `/etc/hostname` and `/etc/hosts` to point to a hostname such as `jvillbrandt-robot`. Restart the robot with `sudo shutdown -r now` and verify that Avahi mDNS installed correctly by running `ping jvillbrandt-robot.local` from another machine on the local network.
+```bash
+sudo apt-get update
+sudo apt-get install -y git
+```
+
+## Optional Environment Setup
+
+The following packages are optional and are intended for a development workstation:
+
+```bash
+# old gnome
+sudo apt-get install -y gnome-session-fallback compizconfig-settings-manager
+
+# sublime 3
+sudo add-apt-repository ppa:webupd8team/sublime-text-3
+sudo apt-get update
+sudo apt-get install -y sublime-text-installer
+
+# zsh
+sudo apt-get install -y zsh
+chsh -s $(which zsh)
+sh -c "$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
+
+# scm_breeze
+git clone git://github.com/ndbroadbent/scm_breeze.git ~/.scm_breeze
+~/.scm_breeze/install.sh
+source ~/.zshrc
+```
 
 ## Install ROS
 
 If you have earlier versions of ROS installed, it might be best to uninstall them first. If you have problems with the subsequent install statements, try using aptitude instead of apt-get to resolve dependencies.
 
-    sudo apt-get purge ros-groovy-*
+```
+sudo apt-get purge ros-hydro-*
+```
 
-Follow the [ROS Hydro Install Guide](http://wiki.ros.org/hydro/Installation/Ubuntu) to get ROS up an running. This boils down to:
+Follow the [ROS Jade Install Guide](http://wiki.ros.org/jade/Installation/Ubuntu) to get ROS up an running. This boils down to:
 
-    sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu precise main" > /etc/apt/sources.list.d/ros-latest.list'
-    wget http://packages.ros.org/ros.key -O - | sudo apt-key add -
-    sudo apt-get update
-    sudo apt-get install ros-hydro-desktop-full
+```bash
+sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+sudo apt-key adv --keyserver hkp://pool.sks-keyservers.net:80 --recv-key 0xB01FA116
+sudo apt-get update
+sudo apt-get install -y ros-jade-desktop-full
+sudo rosdep init
+rosdep update
+```
 
 In addition to the standard desktop package, you'll want to install a few other packages that the mecanumbot package depends on. The first few lines of this are from the [PCL Ubuntu install page](http://pointclouds.org/downloads/linux.html).
 
-    sudo add-apt-repository ppa:v-launchpad-jochen-sprickerhof-de/pcl
-    sudo apt-get update
-    sudo apt-get install libpcl-all
-    sudo apt-get install ros-hydro-pcl-ros ros-hydro-joy ros-hydro-openni-camera ros-hydro-openni-launch ros-hydro-rosserial-arduino ros-hydro-rosserial ros-hydro-robot-upstart ros-hydro-rqt-robot-plugins screen
+```bash
+sudo add-apt-repository ppa:v-launchpad-jochen-sprickerhof-de/pcl
+sudo apt-get update
+sudo apt-get install -y libpcl-all ros-jade-pcl-ros ros-jade-joy ros-jade-openni-camera ros-jade-openni-launch ros-jade-rosserial-arduino ros-jade-rosserial ros-jade-robot-upstart ros-jade-rqt-robot-plugins screen
+```
 
-To complete the install, source the ROS bash file. You'll probably want to stick this in your `.bashrc` file as well.
+To complete the install, source the ROS bash file. You'll probably want to stick this in your `~/.zshrc` file as well.
 
-    source /opt/ros/hydro/setup.bash
+```bash
+# for bash
+echo "source /opt/ros/jade/setup.bash" >> ~/.bashrc
+source ~/.bashrc
+
+# for zsh
+echo "source /opt/ros/jade/setup.zsh" >> ~/.zshrc
+source ~/.zshrc
+```
 
 ## Create a Workspace
 
 Create a Catkin workspace by following the [create a workspace](http://wiki.ros.org/catkin/Tutorials/create_a_workspace) guide on ros.org. This boils down to:
 
-    mkdir -p ~/catkin_ws/src
-    cd ~/catkin_ws/
-    catkin_make
+```bash
+mkdir -p ~/catkin_ws/src
+cd ~/catkin_ws/src
+catkin_init_workspace
+cd ~/catkin_ws
+catkin_make
+```
 
-Just like with the primary ROS install, you'll want to source the newly created bash setup file as well as adding it to your bashrc file.
+Just like with the primary ROS install, you'll want to source the newly created bash setup file as well as adding it to your `~/.zshrc` file.
 
-    source ~/catkin_ws/devel/setup.bash
+```bash
+echo "source ~/catkin_ws/devel/setup.zsh" >> ~/.zshrc
+source ~/.zshrc
+```
 
 ## Clone the Mecanumbot Package
 
-    cd ~/catkin_ws/src
-    git clone https://github.com/joshvillbrandt/mecanumbot.git
+```bash
+cd ~/catkin_ws/src
+git clone https://github.com/joshvillbrandt/mecanumbot.git
+```
 
 Set up unique identifiers for USB devices by linking to custom device rules.
 
-    cd /etc/udev/rules.d/
-    sudo ln -s ~/catkin_ws/src/mecanumbot/extra/99-usb-serial.rules 99-usb-serial.rules
+```bash
+cd /etc/udev/rules.d/
+sudo ln -s ~/catkin_ws/src/mecanumbot/extra/99-usb-serial.rules 99-usb-serial.rules
+```
 
 ## Set up the XV-11 Laser
 
 There was recently an XV-11 laser driver package added to Hydro, but it seems useless at the moment. (Try `sudo apt-get install ros-hydro-xv-11-laser-driver` to install it.) Until that works, you can run the following lines to get the laser set up.
 
-    cd ~/catkin_ws/src
-    git clone https://github.com/joshvillbrandt/xv_11_laser_driver.git
+```bash
+cd ~/catkin_ws/src
+git clone https://github.com/joshvillbrandt/xv_11_laser_driver.git
+```
 
 After the initial install or after making any code changes, the mecanumbot package needs to be compiled. You can do this by running:
 
-    cd ~/catkin_ws
-    catkin_make
+```bash
+cd ~/catkin_ws
+catkin_make
+```
 
 ## Extra
 
 These setup steps aren't always necessary.
-
-### Enable SSD TRIM
-
-Ubuntu < 14.04 has TRIM disabled by default. Checkout [this link](http://askubuntu.com/questions/18903/how-to-enable-trim/19480#19480) for instructions on how to enable it yourself.
 
 ### New udev Rules
 
