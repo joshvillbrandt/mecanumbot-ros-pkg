@@ -10,7 +10,7 @@ After installtion completes, install these additional, required packages:
 
 ```bash
 sudo apt-get update
-sudo apt-get install -y git
+sudo apt-get install -y git screen
 ```
 
 ## Optional Environment Setup
@@ -61,7 +61,7 @@ In addition to the standard desktop package, you'll want to install a few other 
 ```bash
 sudo add-apt-repository ppa:v-launchpad-jochen-sprickerhof-de/pcl
 sudo apt-get update
-sudo apt-get install -y libpcl-all ros-jade-pcl-ros ros-jade-joy ros-jade-openni-camera ros-jade-openni-launch ros-jade-rosserial-arduino ros-jade-rosserial ros-jade-robot-upstart ros-jade-rqt-robot-plugins screen
+sudo apt-get install -y libpcl-all ros-jade-pcl-ros ros-jade-joy ros-jade-openni-camera ros-jade-openni-launch ros-jade-rosserial-arduino ros-jade-rosserial ros-jade-robot-upstart ros-jade-rqt-robot-plugins ros-jade-hector-slam
 ```
 
 To complete the install, source the ROS bash file. You'll probably want to stick this in your `~/.zshrc` file as well.
@@ -100,6 +100,8 @@ source ~/.zshrc
 ```bash
 cd ~/catkin_ws/src
 git clone https://github.com/joshvillbrandt/mecanumbot.git
+cd ~/catkin_ws
+catkin_make
 ```
 
 Set up unique identifiers for USB devices by linking to custom device rules.
@@ -111,16 +113,10 @@ sudo ln -s ~/catkin_ws/src/mecanumbot/extra/99-usb-serial.rules 99-usb-serial.ru
 
 ## Set up the XV-11 Laser
 
-There was recently an XV-11 laser driver package added to Hydro, but it seems useless at the moment. (Try `sudo apt-get install ros-hydro-xv-11-laser-driver` to install it.) Until that works, you can run the following lines to get the laser set up.
-
 ```bash
 cd ~/catkin_ws/src
-git clone https://github.com/joshvillbrandt/xv_11_laser_driver.git
-```
-
-After the initial install or after making any code changes, the mecanumbot package needs to be compiled. You can do this by running:
-
-```bash
+git clone https://github.com/rohbotics/xv_11_laser_driver.git
+sudo adduser $(whoami) dialout
 cd ~/catkin_ws
 catkin_make
 ```
@@ -146,7 +142,7 @@ The following steps will allow you to update the onboard Arduino.
     cd ~/sketchbook/libraries
     rm -rf ros_lib # just in case
     rosrun rosserial_arduino make_libraries.py .
-    sudo apt-get install arduino arduino-core 
+    sudo apt-get install arduino arduino-core
 
 Now open the [MecanumbotController](https://github.com/joshvillbrandt/MecanumbotController) sketch in the Arduino IDE, select board==Arduino Mega 2560 and the correct serial port (try `ls -l /dev | grep USB` and look for `controller`) and click the upload button.
 
@@ -167,7 +163,7 @@ There seems to be a bug with the FTDI chip and the Ubuntu power saving component
 
     sudo lsof /dev/ttyUSB0
     should now report nothing
-    Now, Arduino should give access to the USB interface. 
+    Now, Arduino should give access to the USB interface.
 
 More information [here](http://arduino.cc/forum/index.php?topic=104492.15 and http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=586751).
 
