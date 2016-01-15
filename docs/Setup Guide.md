@@ -10,7 +10,7 @@ After installtion completes, install these additional, required packages:
 
 ```bash
 sudo apt-get update
-sudo apt-get install -y git screen
+sudo apt-get install -y git openssh-server screen
 ```
 
 ## Optional Environment Setup
@@ -98,8 +98,7 @@ source ~/.zshrc
 ## Clone the Mecanumbot Package
 
 ```bash
-cd ~/catkin_ws/src
-git clone https://github.com/joshvillbrandt/mecanumbot.git
+git clone https://github.com/joshvillbrandt/mecanumbot-ros-pkg.git ~/catkin_ws/src/mecanumbot
 cd ~/catkin_ws
 catkin_make
 ```
@@ -135,14 +134,16 @@ Rules are automatically ran at startup. To automatically reload the rules withou
 
 ### Installing Arduino Code
 
-The following steps will allow you to update the onboard Arduino.
+The following steps will allow you to update the onboard Arduino. Note that you must run `catkin_make` prior to this step in order to generate headers for custom message types.
 
-    mv ~/sketchbook ~/sketchbook_old
-    ln -s ~/catkin_ws/src/mecanumbot/arduino ~/sketchbook
-    cd ~/sketchbook/libraries
-    rm -rf ros_lib # just in case
-    rosrun rosserial_arduino make_libraries.py .
-    sudo apt-get install arduino arduino-core
+```bash
+mv ~/sketchbook ~/sketchbook_old
+ln -s ~/catkin_ws/src/mecanumbot/arduino ~/sketchbook
+cd ~/sketchbook/libraries
+rm -rf ros_lib # just in case
+rosrun rosserial_arduino make_libraries.py .
+sudo apt-get install -y arduino arduino-core
+```
 
 Now open the [MecanumbotController](https://github.com/joshvillbrandt/MecanumbotController) sketch in the Arduino IDE, select board==Arduino Mega 2560 and the correct serial port (try `ls -l /dev | grep USB` and look for `controller`) and click the upload button.
 
@@ -150,20 +151,25 @@ Now open the [MecanumbotController](https://github.com/joshvillbrandt/Mecanumbot
 
 There seems to be a bug with the FTDI chip and the Ubuntu power saving component, upower. We can tell upower not to care about ttyUSB devices so that we can see the FTDI chip on startup. The following notes are taken from http://ten.homelinux.net/productivity/recipes/Arduino%20does%20not%20see%20ttyUSB0.
 
-    sudo vi /lib/udev/rules.d/95-upower-wup.rules
-    and look for an entry like:
+```bash
+sudo vi /lib/udev/rules.d/95-upower-wup.rules
+```
 
-    SUBSYSTEM=="tty", SUBSYSTEMS=="usb", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ATTRS{serial}=="A80?????", ENV{UPOWER_VENDOR}="Watts Up, Inc.", ENV{UPOWER_PRODUCT}="Watts Up? Pro", ENV{UP_MONITOR_TYPE}="wup"
+And look for an entry like:
 
-    If present, comment the line (prepend the line by a "#")
+> SUBSYSTEM=="tty", SUBSYSTEMS=="usb", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ATTRS{serial}=="A80?????", ENV{UPOWER_VENDOR}="Watts Up, Inc.", ENV{UPOWER_PRODUCT}="Watts Up? Pro", ENV{UP_MONITOR_TYPE}="wup"
 
-    sudo /etc/init.d/udev restart
+If present, comment the line (prepend the line by a "#") and then:
 
-    sudo killall upowerd
+```bash
+sudo /etc/init.d/udev restart
 
-    sudo lsof /dev/ttyUSB0
-    should now report nothing
-    Now, Arduino should give access to the USB interface.
+sudo killall upowerd
+
+sudo lsof /dev/ttyUSB0
+# should now report nothing
+# Now, Arduino should give access to the USB interface.
+```
 
 More information [here](http://arduino.cc/forum/index.php?topic=104492.15 and http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=586751).
 
@@ -171,19 +177,23 @@ More information [here](http://arduino.cc/forum/index.php?topic=104492.15 and ht
 
 Run the following steps to start the wiimote node. The following steps are from http://www.ros.org/wiki/wiimote/Tutorials/StartingWiimoteNode.
 
-    sudo apt-get install python-rosdep
-    rosdep install wiimote
-    rosmake wiimote
-    rosrun wiimote wiimote_node.py
+```bash
+sudo apt-get install -y python-rosdep
+rosdep install wiimote
+rosmake wiimote
+rosrun wiimote wiimote_node.py
+```
 
 With a new Electric install, the libcwiid library will complain about an unknown symbol clock_gettime. The problem is with Electric's bundled version of the library. Run the following steps to install the stock library. From http://answers.ros.org/question/28084/problem-in-wiimote_nodepy/.
 
-    sudo apt-get install libcwiid1 libcwiid-dev
-    cd /opt/ros/electric/stacks/joystick_drivers/cwiid/cwiid/lib/
-    sudo mkdir old
-    sudo mv libcwiid.s* old
-    sudo ln -s /usr/lib/libcwiid.so libcwiid.so
-    sudo ln -s /usr/lib/libcwiid.so.1 libcwiid.so.1
-    sudo ln -s /usr/lib/libcwiid.so.1.0 libcwiid.so.1.0
+```bash
+sudo apt-get install -y libcwiid1 libcwiid-dev
+cd /opt/ros/electric/stacks/joystick_drivers/cwiid/cwiid/lib/
+sudo mkdir old
+sudo mv libcwiid.s* old
+sudo ln -s /usr/lib/libcwiid.so libcwiid.so
+sudo ln -s /usr/lib/libcwiid.so.1 libcwiid.so.1
+sudo ln -s /usr/lib/libcwiid.so.1.0 libcwiid.so.1.0
+```
 
 I also installed everything on this page: https://help.ubuntu.com/community/CWiiD.

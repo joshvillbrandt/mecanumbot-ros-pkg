@@ -24,15 +24,13 @@ include_directories(${Eigen_INCLUDE_DIRS})
 add_message_files(
   FILES
   RobotHealth.msg
-  LightControl.msg
 )
 
 ## Generate services in the 'srv' folder
-# add_service_files(
-#   FILES
-#   Service1.srv
-#   Service2.srv
-# )
+add_service_files(
+  FILES
+  RobotHazardsEnable.srv
+)
 
 ## Generate added messages and services with any dependencies listed here
 generate_messages(

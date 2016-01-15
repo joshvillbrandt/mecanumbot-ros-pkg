@@ -22,4 +22,7 @@
     
     <!-- start laser -->
     <include file="$(find mecanumbot)/launch/laser.launch" />
+    
+    <!-- start kinect -->
+    <!-- <include file="$(find mecanumbot)/launch/kinect.launch" /> -->
 </launch>
