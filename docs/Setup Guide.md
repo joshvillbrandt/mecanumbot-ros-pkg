@@ -145,7 +145,7 @@ rosrun rosserial_arduino make_libraries.py .
 sudo apt-get install -y arduino arduino-core
 ```
 
-Now open the [MecanumbotController](https://github.com/joshvillbrandt/MecanumbotController) sketch in the Arduino IDE, select board==Arduino Mega 2560 and the correct serial port (try `ls -l /dev | grep USB` and look for `controller`) and click the upload button.
+Now open the [MecanumbotController](https://github.com/joshvillbrandt/MecanumbotController) sketch in the Arduino IDE, select board==Arduino Mega 2560 and the correct serial port (try `ls -l /dev | grep USB` and look for `arduino`) and click the upload button.
 
 ### Fix upower / Arduino Startup Bug
 

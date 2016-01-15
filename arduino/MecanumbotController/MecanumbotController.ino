@@ -35,7 +35,7 @@ const byte PWR_ADDRESS = 42;
 #define LED_CLOCK_PIN 9
 #define COLOR_WHITE  strip.Color(127, 127, 127)
 #define COLOR_RED    strip.Color(127,   0,   0)
-#define COLOR_YELLOW strip.Color(127, 127,   0)
+#define COLOR_YELLOW strip.Color(127,  95,   0) // color correction
 #define COLOR_GREEN  strip.Color(  0, 127,   0)
 #define COLOR_CYAN   strip.Color(  0, 127, 127)
 #define COLOR_BLUE   strip.Color(  0,   0, 127)
@@ -232,8 +232,8 @@ void loop()
     
     // update LEDs to reflect wall power state
     if(health_msg.wall_active) {
-      setPixle(4, COLOR_GREEN);
-      setPixle(5, COLOR_GREEN);
+      setPixle(4, COLOR_BLUE);
+      setPixle(5, COLOR_BLUE);
     }
     else {
       setPixle(4, COLOR_OFF);
@@ -254,7 +254,7 @@ void loop()
   byte led_sequence = (millis() % 1000) / 125;
   if(hazards_enabled) {
     if(led_sequence == 0 || led_sequence == 2) {
-      setPixles(12, 4, COLOR_YELLOW);
+      setPixles(12, 4, COLOR_GREEN);
     }
     else {
       setPixles(12, 4, COLOR_OFF);
