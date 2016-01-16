@@ -18,8 +18,8 @@ sudo apt-get install -y git openssh-server screen
 The following packages are optional and are intended for a development workstation:
 
 ```bash
-# old gnome
-sudo apt-get install -y gnome-session-fallback compizconfig-settings-manager
+# old gnome (don't forget to enable "Static Application Switcher" for alt-tab)
+sudo apt-get install -y gnome-session-fallback compiz compiz-plugins-extra compizconfig-settings-manager
 
 # sublime 3
 sudo add-apt-repository ppa:webupd8team/sublime-text-3
@@ -164,9 +164,15 @@ These setup steps aren't always necessary.
 
 Check out [this syntax guide](http://www.reactivated.net/writing_udev_rules.html#syntax) for creating new udev rules. To identify properties of currently plugged in devices, try a command like this:
 
-    udevadm info -a -n /dev/ttyUSB0 | grep '{serial}' | head -n1
+```bash
+udevadm info -a -n /dev/ttyUSB0 | grep '{serial}' | head -n1
+```
 
-Rules are automatically ran at startup. To automatically reload the rules without restarting, run `sudo udavadm trigger`.
+Rules are automatically ran at startup. To automatically reload the rules without restarting, run:
+
+```bash
+sudo udevadm control --reload-rules && sudo service udev restart && sudo udevadm trigger
+```
 
 ### Installing Arduino Code
 

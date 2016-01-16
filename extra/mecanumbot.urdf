@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<robot name="origins">
+<robot name="mecanumbot">
 	<link name="base_link">
 		<visual>
 			<geometry>
