@@ -103,11 +103,25 @@ cd ~/catkin_ws
 catkin_make
 ```
 
-Set up unique identifiers for USB devices by linking to custom device rules.
+Set up unique identifiers for USB devices by linking to custom device rules and make sure users are a part of the dialup group
 
 ```bash
 cd /etc/udev/rules.d/
 sudo ln -s ~/catkin_ws/src/mecanumbot/extra/99-usb-serial.rules 99-usb-serial.rules
+```
+
+## Set up the Kinect
+
+The instructions were copied from the TurtleBot documentation at http://learn.turtlebot.com/2015/02/01/5/.
+
+```bash
+mkdir ~/kinectdriver
+cd ~/kinectdriver
+git clone https://github.com/avin2/SensorKinect
+cd SensorKinect/Bin/
+tar xvjf SensorKinect093-Bin-Linux-x64-v5.1.2.1.tar.bz2
+cd Sensor-Bin-Linux-x64-v5.1.2.1/
+sudo ./install.sh
 ```
 
 ## Set up the XV-11 Laser
@@ -118,6 +132,28 @@ git clone https://github.com/rohbotics/xv_11_laser_driver.git
 sudo adduser $(whoami) dialout
 cd ~/catkin_ws
 catkin_make
+```
+
+## Set up upstart
+
+To automatically launch ROS on startup:
+
+```bash
+rosrun robot_upstart install mecanumbot/launch/core.launch
+```
+
+Manually control the upstart job with these:
+
+```bash
+sudo service mecanumbot start
+sudo service mecanumbot stop
+```
+
+
+Check the log like this:
+
+```bash
+sudo tail /var/log/upstart/mecanumbot.log -n 30
 ```
 
 ## Extra

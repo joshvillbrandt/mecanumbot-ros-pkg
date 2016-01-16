@@ -1,5 +1,5 @@
-SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ATTRS{serial}=="AD01W5EB", SYMLINK+="arduino"
-SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ATTRS{serial}=="A601637M", SYMLINK+="laser"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ATTRS{serial}=="AD01W5EB", SYMLINK+="arduino", MODE="0666"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ATTRS{serial}=="A601637M", SYMLINK+="laser", MODE="0666"
 KERNEL=="js*", KERNELS=="3-1.2:1.0", SYMLINK+="xboxcontroller"
 
 # http://www.reactivated.net/writing_udev_rules.html#syntax

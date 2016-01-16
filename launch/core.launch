@@ -2,7 +2,7 @@
 
 <launch>
     <!-- roscore automatically started by roslaunch -->
-    
+
     <!-- start publishing transforms -->
     <arg name="model" />
     <arg name="gui" default="False" />
@@ -10,19 +10,19 @@
     <param name="use_gui" value="$(arg gui)" />
     <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
     <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
-    
+
     <!-- start odom converter -->
     <node pkg="mecanumbot" type="odometry_publisher" name="odometry_publisher" output="screen">
         <param name="~scale_x" value="0.000885" />
         <param name="~scale_th" value="0.0032" />
     </node>
-    
+
     <!-- start arduino -->
     <include file="$(find mecanumbot)/launch/controller.launch" />
-    
+
     <!-- start laser -->
     <include file="$(find mecanumbot)/launch/laser.launch" />
-    
+
     <!-- start kinect -->
-    <!-- <include file="$(find mecanumbot)/launch/kinect.launch" /> -->
+    <include file="$(find mecanumbot)/launch/kinect.launch" />
 </launch>
