@@ -4,7 +4,7 @@ Complete the following steps to install the mecanumbot package on a new robot. I
 
 ## Install Ubuntu 14.04
 
-Use your favorite method to install a fresh copy of Ubuntu Trusty. Pay special note to the hostname you choose during installation - this will be the hostname of your robot.
+Use your favorite method to install a fresh copy of Ubuntu Trusty. Pay special attention to the hostname you choose during installation - this will be the hostname of your robot.
 
 After installtion completes, install these additional, required packages:
 
@@ -42,7 +42,7 @@ source ~/.zshrc
 If you have earlier versions of ROS installed, it might be best to uninstall them first. If you have problems with the subsequent install statements, try using aptitude instead of apt-get to resolve dependencies.
 
 ```
-sudo apt-get purge ros-hydro-*
+sudo apt-get purge ros-indigo-*
 ```
 
 Follow the [ROS Jade Install Guide](http://wiki.ros.org/jade/Installation/Ubuntu) to get ROS up an running. This boils down to:
@@ -106,8 +106,10 @@ catkin_make
 Set up unique identifiers for USB devices by linking to custom device rules and make sure users are a part of the dialup group
 
 ```bash
-cd /etc/udev/rules.d/
-sudo ln -s ~/catkin_ws/src/mecanumbot/extra/99-usb-serial.rules 99-usb-serial.rules
+sudo cp ~/catkin_ws/src/mecanumbot/extra/99-usb-serial.rules /etc/udev/rules.d/
+
+# to immediately reload the rules without restarting
+sudo udevadm control --reload-rules && sudo service udev restart && sudo udevadm trigger
 ```
 
 ## Set up the Kinect
