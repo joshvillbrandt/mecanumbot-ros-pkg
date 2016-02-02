@@ -74,7 +74,7 @@ add_executable(target_follower src/target_follower.cpp)
 add_executable(target_average_filter src/target_average_filter.cpp)
 
 ## Add dependencies to the executable
-# add_dependencies(mecanumbot_node ${PROJECT_NAME})
+add_dependencies(teleop_xbox mecanumbot_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(odometry_publisher
