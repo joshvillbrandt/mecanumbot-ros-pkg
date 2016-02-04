@@ -1,14 +1,8 @@
+# arduino (Seeeduino Mega)
 SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ATTRS{serial}=="AD01W5EB", SYMLINK+="arduino", MODE="0666"
+
+# neato laser scanner (custom USB interface board)
 SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ATTRS{serial}=="A601637M", SYMLINK+="laser", MODE="0666"
-KERNEL=="js*", KERNELS=="3-1.2:1.0", SYMLINK+="xboxcontroller"
 
-# http://www.reactivated.net/writing_udev_rules.html#syntax
-# KERNELS=="3-1.2:1.0", SYMLINK+="xboxcontroller" # gets confused with the related event5
-# SUBSYSTEM=="input", ATTRS{bInterfaceNumber}=="00", SYMLINK+="xboxcontroller2"
-# SUBSYSTEMS=="input", ATTR{bInterfaceNumber}=="00", SYMLINK+="xboxcontroller6"
-# SUBSYSTEMS=="input", ATTRS{bInterfaceNumber}=="00", SYMLINK+="xboxcontroller7"
-# SUBSYSTEM=="usb", ATTRS{idVendor}=="045e", ATTRS{idProduct}=="0719", SYMLINK+="xboxcontroller3"
-
-# SUBSYSTEM=="input", ATTRS{name}=="Xbox 360 Wireless Receiver", SYMLINK+="xboxcontroller4"
-# SUBSYSTEM=="input", ATTRS{name}=="Xbox 360 Wireless Receiver", SYMLINK+="xboxcontroller5"
-
+# microsoft xbox controller
+SUBSYSTEM=="input", KERNEL=="js*", SUBSYSTEMS=="usb", DRIVERS=="xpad", ATTRS{bInterfaceNumber}=="00", SYMLINK+="xboxcontroller"
