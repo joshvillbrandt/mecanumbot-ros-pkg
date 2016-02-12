@@ -1,0 +1,626 @@
+<robot
+  name="mecanumbot">
+  <link
+    name="base_link">
+    <inertial>
+      <origin
+        xyz="-0.0468302529926084 -0.0134185737759999 -0.0824261310140349"
+        rpy="0 0 0" />
+      <mass
+        value="0.963214943605585" />
+      <inertia
+        ixx="0.0134647040144989"
+        ixy="-0.000265463820446584"
+        ixz="-2.78747068323768E-05"
+        iyy="0.00653225014173843"
+        iyz="8.21292306097245E-05"
+        izz="0.0182974601808885" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mecanumbot/description/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.0980392156862745 0.0980392156862745 0.0980392156862745 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mecanumbot/description/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="fl_wheel_link">
+    <inertial>
+      <origin
+        xyz="0.02108 -8.5029E-07 3.7806E-05"
+        rpy="0 0 0" />
+      <mass
+        value="0.33461" />
+      <inertia
+        ixx="0.00031908"
+        ixy="4.8609E-07"
+        ixz="2.8449E-07"
+        iyy="0.0002658"
+        iyz="-4.3138E-07"
+        izz="0.00026633" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mecanumbot/description/fl_wheel_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.5 0.5 0.5 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mecanumbot/description/fl_wheel_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="base_link_to_fl_wheel_joint"
+    type="continuous">
+    <origin
+      xyz="0.0788531486544269 -0.147251192141458 -0.0851412158001636"
+      rpy="1.5707963267949 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="fl_wheel_link" />
+    <axis
+      xyz="-1 0 0" />
+  </joint>
+  <link
+    name="fr_wheel_link">
+    <inertial>
+      <origin
+        xyz="0.021164 5.4602E-06 -1.1653E-05"
+        rpy="0 0 0" />
+      <mass
+        value="0.33461" />
+      <inertia
+        ixx="0.00031906"
+        ixy="-1.3078E-07"
+        ixz="9.0598E-08"
+        iyy="0.00026623"
+        iyz="2.618E-08"
+        izz="0.00026621" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mecanumbot/description/fr_wheel_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.5 0.5 0.5 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mecanumbot/description/fr_wheel_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="base_link_to_fr_wheel_joint"
+    type="continuous">
+    <origin
+      xyz="-0.168291019374608 -0.147251192141458 -0.0851412158001628"
+      rpy="2.08567039686228 0 3.14159265358979" />
+    <parent
+      link="base_link" />
+    <child
+      link="fr_wheel_link" />
+    <axis
+      xyz="1 0 0" />
+  </joint>
+  <link
+    name="bl_wheel_link">
+    <inertial>
+      <origin
+        xyz="0.021164 7.7945E-06 -6.7187E-06"
+        rpy="0 0 0" />
+      <mass
+        value="0.33461" />
+      <inertia
+        ixx="0.00031906"
+        ixy="-1.5891E-07"
+        ixz="3.1125E-08"
+        iyy="0.00026624"
+        iyz="1.7121E-08"
+        izz="0.0002662" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mecanumbot/description/bl_wheel_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.5 0.5 0.5 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mecanumbot/description/bl_wheel_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="base_link_to_bl_wheel_joint"
+    type="continuous">
+    <origin
+      xyz="0.0788180033333974 0.110748807858542 -0.0851412158001625"
+      rpy="1.5707963267949 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="bl_wheel_link" />
+    <axis
+      xyz="1 0 0" />
+  </joint>
+  <link
+    name="br_wheel_link">
+    <inertial>
+      <origin
+        xyz="0.02108 -3.0956E-06 3.2979E-05"
+        rpy="0 0 0" />
+      <mass
+        value="0.33461" />
+      <inertia
+        ixx="0.00031908"
+        ixy="5.1312E-07"
+        ixz="3.4259E-07"
+        iyy="0.00026578"
+        iyz="-4.2237E-07"
+        izz="0.00026634" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mecanumbot/description/br_wheel_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.5 0.5 0.5 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mecanumbot/description/br_wheel_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="base_link_to_br_wheel_joint"
+    type="continuous">
+    <origin
+      xyz="-0.168326164695638 0.110748807858543 -0.0851412158001639"
+      rpy="2.07266866801634 0 3.14159265358979" />
+    <parent
+      link="base_link" />
+    <child
+      link="br_wheel_link" />
+    <axis
+      xyz="-1 0 0" />
+  </joint>
+  <link
+    name="base_laser">
+    <inertial>
+      <origin
+        xyz="-0.00610408561341411 4.74394690197499E-10 -0.0117846353165668"
+        rpy="0 0 0" />
+      <mass
+        value="0.209244181201808" />
+      <inertia
+        ixx="0.000110184398375382"
+        ixy="-2.0430212811893E-12"
+        ixz="2.33665153595339E-05"
+        iyy="0.000168161810285351"
+        iyz="-2.0599988717986E-12"
+        izz="0.000217623921858232" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mecanumbot/description/base_laser.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.0980392156862745 0.0980392156862745 0.0980392156862745 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mecanumbot/description/base_laser.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="base_link_to_base_laser"
+    type="fixed">
+    <origin
+      xyz="-0.0447365080206049 -0.117567277135445 -0.00506621580016293"
+      rpy="0 -6.12303176911189E-17 -1.5707963267949" />
+    <parent
+      link="base_link" />
+    <child
+      link="base_laser" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="mid_plate_link">
+    <inertial>
+      <origin
+        xyz="1.6128E-05 0.0015881 -0.017739"
+        rpy="0 0 0" />
+      <mass
+        value="0.23689" />
+      <inertia
+        ixx="0.002171"
+        ixy="-2.3382E-12"
+        ixz="-5.1294E-07"
+        iyy="0.0032534"
+        iyz="-1.6807E-08"
+        izz="0.0010828" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mecanumbot/description/mid_plate_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 0.3" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mecanumbot/description/mid_plate_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="base_link_to_mid_plate_link"
+    type="fixed">
+    <origin
+      xyz="-0.0447365080206053 -0.0182511921414576 -0.0204662158001629"
+      rpy="1.5707963267949 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="mid_plate_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="top_plate_supports">
+    <inertial>
+      <origin
+        xyz="0.032556 -0.021976 6.3957E-07"
+        rpy="0 0 0" />
+      <mass
+        value="0.011427" />
+      <inertia
+        ixx="0.00013177"
+        ixy="6.8725E-11"
+        ixz="1.7139E-11"
+        iyy="5.4806E-05"
+        iyz="-5.7899E-11"
+        izz="0.00018539" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mecanumbot/description/top_plate_supports.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.86667 0.9098 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mecanumbot/description/top_plate_supports.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="mid_plate_link_to_top_plate_supports"
+    type="fixed">
+    <origin
+      xyz="-0.0325563676649805 0.015675 0.006161057906821"
+      rpy="1.5707963267949 0 0" />
+    <parent
+      link="mid_plate_link" />
+    <child
+      link="top_plate_supports" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="top_plate_link">
+    <inertial>
+      <origin
+        xyz="-0.16966 0.00013265 -0.0015888"
+        rpy="0 0 0" />
+      <mass
+        value="0.28331" />
+      <inertia
+        ixx="0.0011384"
+        ixy="-5.8832E-06"
+        ixz="-1.9222E-09"
+        iyy="0.0027192"
+        iyz="5.0491E-11"
+        izz="0.0038572" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mecanumbot/description/top_plate_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 0.3" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mecanumbot/description/top_plate_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="top_plate_supports_to_top_plate_link"
+    type="fixed">
+    <origin
+      xyz="0.0325563676649805 0.163838942093179 -0.015675"
+      rpy="3.14159265358979 -8.67361737988403E-17 1.5707963267949" />
+    <parent
+      link="top_plate_supports" />
+    <child
+      link="top_plate_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="camera_supports">
+    <inertial>
+      <origin
+        xyz="0.097 0.042365 2.7756E-17"
+        rpy="0 0 0" />
+      <mass
+        value="0.041975" />
+      <inertia
+        ixx="2.3362E-05"
+        ixy="7.0655E-23"
+        ixz="8.4124E-20"
+        iyy="0.00039559"
+        iyz="-7.0524E-23"
+        izz="0.0004183" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mecanumbot/description/camera_supports.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.86667 0.9098 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mecanumbot/description/camera_supports.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="top_plate_link_to_camera_supports"
+    type="fixed">
+    <origin
+      xyz="-0.29 -0.097 0"
+      rpy="1.5707963267949 0 1.5707963267949" />
+    <parent
+      link="top_plate_link" />
+    <child
+      link="camera_supports" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="camera_link">
+    <inertial>
+      <origin
+        xyz="-0.029956 9.3245E-05 -0.0070276"
+        rpy="0 0 0" />
+      <mass
+        value="0.69591" />
+      <inertia
+        ixx="0.0033836"
+        ixy="1.7407E-06"
+        ixz="5.1418E-06"
+        iyy="0.00047859"
+        iyz="4.5598E-07"
+        izz="0.0033435" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mecanumbot/description/camera_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.098039 0.098039 0.098039 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mecanumbot/description/camera_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="camera_supports_to_camera_link"
+    type="fixed">
+    <origin
+      xyz="0.097 0.10242 0.0175000000000002"
+      rpy="-1.5707963267949 -1.5707963267949 0" />
+    <parent
+      link="camera_supports" />
+    <child
+      link="camera_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="e_stop">
+    <inertial>
+      <origin
+        xyz="3.4694E-18 0.0063686 0"
+        rpy="0 0 0" />
+      <mass
+        value="0.016321" />
+      <inertia
+        ixx="2.4638E-06"
+        ixy="6.2017E-22"
+        ixz="-2.6181E-22"
+        iyy="1.3157E-06"
+        iyz="-1.9965E-22"
+        izz="2.4638E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mecanumbot/description/e_stop.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.7 0 0 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mecanumbot/description/e_stop.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="base_link_to_e_stop"
+    type="fixed">
+    <origin
+      xyz="0.0184384919793947 0.144923807858542 -0.0836412158001629"
+      rpy="-6.12303176911189E-17 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="e_stop" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+</robot>
