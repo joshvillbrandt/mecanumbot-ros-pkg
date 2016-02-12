@@ -4,12 +4,7 @@
     <!-- roscore automatically started by roslaunch -->
 
     <!-- start publishing transforms -->
-    <arg name="model" />
-    <arg name="gui" default="False" />
-    <param name="robot_description" textfile="$(find mecanumbot)/extra/mecanumbot.urdf" />
-    <param name="use_gui" value="$(arg gui)" />
-    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
-    <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
+    <include file="$(find mecanumbot)/launch/description.launch" />
 
     <!-- start odom converter -->
     <node pkg="mecanumbot" type="odometry_publisher" name="odometry_publisher" output="screen">
