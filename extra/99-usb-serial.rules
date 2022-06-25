@@ -1,8 +1,0 @@
-# arduino (Seeeduino Mega)
-SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ATTRS{serial}=="AD01W5EB", SYMLINK+="arduino", MODE="0666"
-
-# neato laser scanner (custom USB interface board)
-SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ATTRS{serial}=="A601637M", SYMLINK+="laser", MODE="0666"
-
-# microsoft xbox controller
-SUBSYSTEM=="input", KERNEL=="js*", SUBSYSTEMS=="usb", DRIVERS=="xpad", ATTRS{bInterfaceNumber}=="00", SYMLINK+="xboxcontroller"
