@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-
-<launch>
-	<!-- start arduino -->
-	<node pkg="rosserial_python" type="serial_node.py" args="/dev/arduino" name="rosserial_controller" respawn="true" output="screen" />
-
-	<!-- 	rosrun rosserial_python serial_node.py /dev/arduino -->
-</launch>
